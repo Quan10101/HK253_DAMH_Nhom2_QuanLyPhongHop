@@ -45,13 +45,3 @@ Lưu ý: Phiên bản giao diện hiện tại dùng `LocalStorage` để chạy
 - Xem thời gian trống của phòng theo ngày và ca làm việc.
 - Tạo lịch họp mới và kiểm tra trùng lịch.
 
-## 6. Gợi ý đưa lên Github
-Upload toàn bộ các file sau lên Github:
-- `index.html`
-- `styles.css`
-- `app.js`
-- `database.sql`
-- `README.md`
-
-Sau khi upload, copy link repository Github và dán vào file HDSD:
-`HK253_DAMH_Nhom2_C4-1_HDSD.docx`
