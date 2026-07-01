@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MeetingRoom - Quản lý phòng họp</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>MeetingRoom</h1>
+                <p>Quản lý phòng họp</p>
+            </div>
+
+            <nav class="side-menu" aria-label="Menu chính">
+                <button class="nav-item active" data-page="roomsPage">Danh sách phòng</button>
+                <button class="nav-item" data-page="bookingPage">Lịch đặt phòng</button>
+                <button class="nav-item" data-page="historyPage">Lịch sử sử dụng</button>
+                <button class="nav-item" data-page="freeTimePage">Thời gian trống</button>
+            </nav>
+
+            <button class="logout-btn">Đăng xuất</button>
+        </aside>
+
+        <main class="main">
+            <header class="user-header">
+                <div></div>
+                <div class="user-box">
+                    <div class="user-text">
+                        <strong>Quản lý phòng họp</strong>
+                        <span>manager@xyz.com</span>
+                    </div>
+                    <div class="avatar">QL</div>
+                </div>
+            </header>
+
+            <section class="page active" id="roomsPage">
+                <div class="title-block">
+                    <h2>Quản lý danh mục phòng họp</h2>
+                    <p>Thêm, sửa, xóa và xem danh sách phòng họp trong công ty XYZ.</p>
+                </div>
+
+                <div class="stats three">
+                    <div class="stat-card">
+                        <span>Tổng số phòng</span>
+                        <strong id="totalRooms">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Đang hoạt động</span>
+                        <strong id="activeRooms">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Đang bảo trì</span>
+                        <strong id="maintainRooms">0</strong>
+                    </div>
+                </div>
+
+                <div class="content-grid rooms-grid">
+                    <section class="panel room-list-panel">
+                        <div class="panel-title">Danh sách phòng họp</div>
+                        <div class="toolbar room-toolbar">
+                            <input id="roomSearch" type="text" placeholder="Tìm kiếm theo mã phòng hoặc tên phòng..." />
+                            <select id="roomStatusFilter">
+                                <option value="all">Trạng thái</option>
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Bảo trì">Bảo trì</option>
+                            </select>
+                        </div>
+
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Mã phòng</th>
+                                        <th>Tên phòng</th>
+                                        <th>Số chỗ</th>
+                                        <th>Thiết bị</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="roomsTable"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="table-footer">
+                            <span>Hiển thị</span>
+                            <select>
+                                <option>10</option>
+                            </select>
+                            <span>trên mỗi trang</span>
+                        </div>
+                    </section>
+
+                    <section class="panel room-form-panel">
+                        <div class="panel-title">Thêm / sửa phòng họp</div>
+                        <p class="panel-help">Nhập thông tin ở form này rồi bấm <b>Lưu phòng</b> để thêm mới. Muốn sửa phòng cũ thì bấm chọn một dòng trong bảng bên trái.</p>
+                        <form id="roomForm" class="room-form">
+                            <div class="form-row two">
+                                <label>
+                                    Mã phòng
+                                    <input id="roomCode" type="text" placeholder="PH-A01" required />
+                                    <small>Bắt buộc, không được trùng.</small>
+                                </label>
+                                <label>
+                                    Tên phòng
+                                    <input id="roomName" type="text" placeholder="Phòng họp A" required />
+                                    <small>Bắt buộc nhập.</small>
+                                </label>
+                            </div>
+
+                            <div class="form-row two">
+                                <label>
+                                    Số chỗ ngồi
+                                    <input id="roomCapacity" type="number" min="1" value="20" required />
+                                    <small>Chỉ nhập số, lớn hơn 0.</small>
+                                </label>
+                                <label>
+                                    Trạng thái
+                                    <select id="roomStatus">
+                                        <option>Hoạt động</option>
+                                        <option>Bảo trì</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="device-title">Thiết bị phòng họp</div>
+                            <p class="form-note">Nhập số lượng thiết bị hiện có trong phòng. Nếu không dùng thì nhập 0.</p>
+
+                            <div class="device-line">
+                                <span>Máy chiếu</span>
+                                <input id="projector" type="number" min="0" value="1" />
+                                <em>cái</em>
+                            </div>
+                            <div class="device-line">
+                                <span>Camera</span>
+                                <input id="camera" type="number" min="0" value="1" />
+                                <em>cái</em>
+                            </div>
+                            <div class="device-line">
+                                <span>Micro</span>
+                                <input id="micro" type="number" min="0" value="2" />
+                                <em>cái</em>
+                            </div>
+                            <div class="device-line">
+                                <span>Bảng trắng</span>
+                                <input id="board" type="number" min="0" value="1" />
+                                <em>cái</em>
+                            </div>
+
+                            <div class="message" id="roomMessage">Nếu không có thiết bị, nhập số lượng là 0.</div>
+
+                            <div class="action-row">
+                                <button class="primary" type="submit">Lưu phòng</button>
+                                <button class="light" id="deleteRoomBtn" type="button">Xóa phòng</button>
+                                <button class="light" id="cancelRoomBtn" type="button">Làm mới form</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </section>
+
+            <section class="page" id="bookingPage">
+                <div class="title-block title-with-action">
+                    <div>
+                        <h2>Lịch đặt phòng</h2>
+                        <p>Xem danh sách các lịch đặt phòng theo thời gian, trạng thái và tạo lịch họp mới.</p>
+                    </div>
+                    <button class="primary title-action" id="openBookingBtn" type="button">+ Tạo lịch họp</button>
+                </div>
+
+                <section class="panel filter-panel booking-filter">
+                    <label>
+                        Chọn phòng họp
+                        <select id="bookingRoomFilter"></select>
+                    </label>
+                    <label>
+                        Ngày xem lịch
+                        <input id="bookingDateFilter" type="date" value="2025-05-16" />
+                    </label>
+                    <label>
+                        Trạng thái
+                        <select id="bookingStatusFilter">
+                            <option value="all">Tất cả trạng thái</option>
+                            <option>Chờ xác nhận</option>
+                            <option>Đã duyệt</option>
+                            <option>Đã hủy</option>
+                            <option>Đã hoàn thành</option>
+                        </select>
+                    </label>
+                    <label>
+                        Tìm kiếm
+                        <input id="bookingSearch" type="text" placeholder="Tìm theo tên cuộc họp, người đặt..." />
+                    </label>
+                    <div class="filter-actions">
+                        <button class="light" id="resetBookingBtn">Làm mới</button>
+                        <button class="primary" id="viewBookingBtn">Xem lịch</button>
+                    </div>
+                </section>
+
+                <section class="panel large-table-panel">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã phòng</th>
+                                    <th>Tên phòng</th>
+                                    <th>Ngày</th>
+                                    <th>Giờ bắt đầu</th>
+                                    <th>Giờ kết thúc</th>
+                                    <th>Tên cuộc họp</th>
+                                    <th>Người đặt</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingTable"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <span>Hiển thị</span>
+                        <select><option>10</option></select>
+                        <span>trên mỗi trang</span>
+                    </div>
+                </section>
+            </section>
+
+            <section class="page" id="historyPage">
+                <div class="title-block">
+                    <h2>Lịch sử sử dụng phòng</h2>
+                    <p>Xem lịch sử sử dụng phòng họp theo thời gian và chi tiết cuộc họp.</p>
+                </div>
+
+                <div class="stats history-stats">
+                    <div class="stat-card">
+                        <span>Tổng lượt sử dụng</span>
+                        <strong id="historyTotal">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Phòng dùng nhiều nhất</span>
+                        <strong class="small-strong" id="historyTopRoom">PH-A01 - Phòng họp A</strong>
+                        <em id="historyTopCount">0 lượt sử dụng</em>
+                    </div>
+                    <div class="stat-card">
+                        <span>Tổng giờ sử dụng</span>
+                        <strong id="historyHours">0 giờ</strong>
+                        <em>Trong khoảng thời gian đã chọn</em>
+                    </div>
+                </div>
+
+                <section class="panel filter-panel history-filter">
+                    <label>
+                        Mã phòng hoặc tên phòng
+                        <input id="historyRoomSearch" type="text" placeholder="Nhập mã phòng hoặc tên phòng..." />
+                    </label>
+                    <label>
+                        Khoảng ngày
+                        <input id="historyDateRange" type="text" value="01/05/2024 → 31/05/2024" />
+                    </label>
+                    <label>
+                        Tìm kiếm
+                        <input id="historySearch" type="text" placeholder="Tìm theo tên cuộc họp, người tổ chức..." />
+                    </label>
+                    <div class="filter-actions">
+                        <button class="primary" id="historySearchBtn">Tìm kiếm</button>
+                        <button class="light" id="historyResetBtn">Đặt lại</button>
+                    </div>
+                </section>
+
+                <section class="panel large-table-panel history-table-panel">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã phòng</th>
+                                    <th>Tên phòng</th>
+                                    <th>Ngày sử dụng</th>
+                                    <th>Thời gian</th>
+                                    <th>Tên cuộc họp</th>
+                                    <th>Người tổ chức</th>
+                                    <th>Số người</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTable"></tbody>
+                        </table>
+                    </div>
+                    <div class="result-text" id="historyResultText"></div>
+                </section>
+            </section>
+
+            <section class="page" id="freeTimePage">
+                <div class="title-block">
+                    <h2>Thời gian trống của phòng</h2>
+                    <p>Xem lịch trống của phòng họp theo ngày, ca làm việc hoặc khung giờ cụ thể.</p>
+                </div>
+
+                <section class="panel filter-panel free-filter">
+                    <label>
+                        Chọn phòng họp
+                        <select id="freeRoomSelect"></select>
+                    </label>
+                    <label>
+                        Ngày
+                        <input id="freeDateInput" type="date" value="2025-05-23" />
+                    </label>
+                    <label>
+                        Ca làm việc / Khung giờ
+                        <select id="freeShiftSelect">
+                            <option>Cả ngày</option>
+                            <option>Sáng</option>
+                            <option>Chiều</option>
+                        </select>
+                    </label>
+                    <label>
+                        Tìm kiếm
+                        <input id="freeSearch" type="text" placeholder="Tìm kiếm..." />
+                    </label>
+                    <div class="filter-actions">
+                        <button class="primary" id="freeSearchBtn">Tìm kiếm</button>
+                    </div>
+                </section>
+
+                <div class="content-grid free-grid">
+                    <section class="panel timeline-panel">
+                        <div class="panel-title" id="timelineTitle">Lịch trống ngày 23/05/2025 - Phòng họp A (PH-A01)</div>
+                        <div class="timeline-list" id="timelineList"></div>
+                    </section>
+
+                    <aside class="panel room-info-panel">
+                        <div class="panel-title">Thông tin phòng</div>
+                        <div id="roomInfoContent"></div>
+                    </aside>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+    <div class="modal" id="bookingModal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+            <div class="modal-header">
+                <div>
+                    <h3 id="bookingModalTitle">Tạo lịch họp mới</h3>
+                    <p>Hệ thống sẽ kiểm tra trùng lịch trước khi lưu.</p>
+                </div>
+                <button class="icon-btn" id="closeBookingBtn" type="button" aria-label="Đóng">×</button>
+            </div>
+
+            <form id="bookingForm" class="booking-form-grid">
+                <label>
+                    Tiêu đề cuộc họp
+                    <input id="meetingTitle" type="text" maxlength="200" placeholder="Nhập tiêu đề cuộc họp" required />
+                </label>
+
+                <label>
+                    Phòng họp
+                    <select id="meetingRoom" required></select>
+                </label>
+
+                <label>
+                    Số người
+                    <input id="meetingPeople" type="number" min="1" placeholder="Nhập số người" required />
+                </label>
+
+                <label>
+                    Ngày họp
+                    <input id="meetingDate" type="date" required />
+                </label>
+
+                <label>
+                    Thời gian bắt đầu
+                    <input id="meetingStart" type="time" required />
+                </label>
+
+                <label>
+                    Thời gian kết thúc
+                    <input id="meetingEnd" type="time" required />
+                </label>
+
+                <label class="full">
+                    Người tham gia
+                    <input id="meetingParticipants" type="text" placeholder="VD: an@company.com, binh@company.com" />
+                </label>
+
+                <label class="full">
+                    Nội dung cuộc họp
+                    <textarea id="meetingNote" rows="4" placeholder="Nhập nội dung hoặc ghi chú cuộc họp"></textarea>
+                </label>
+
+                <div class="message full modal-message" id="bookingFormMessage">Điền thông tin để tạo lịch họp mới.</div>
+
+                <div class="form-actions full">
+                    <button type="submit" class="primary">Xác nhận tạo</button>
+                    <button type="button" class="light" id="cancelBookingBtn">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="cancelReasonModal" aria-hidden="true">
+        <div class="modal-card cancel-card" role="dialog" aria-modal="true" aria-labelledby="cancelReasonTitle">
+            <div class="modal-header">
+                <div>
+                    <h3 id="cancelReasonTitle">Nhập lý do hủy lịch</h3>
+                    <p id="cancelBookingDetail">Lịch đặt phòng cần hủy.</p>
+                </div>
+                <button class="icon-btn" id="closeCancelReasonBtn" type="button" aria-label="Đóng">×</button>
+            </div>
+
+            <form id="cancelReasonForm" class="cancel-form">
+                <label>
+                    Lý do hủy
+                    <textarea id="cancelReasonInput" rows="4" maxlength="300" placeholder="VD: Phòng đang bảo trì máy chiếu, vui lòng tạo lịch mới ở phòng khác." required></textarea>
+                </label>
+
+                <div class="message full modal-message" id="cancelReasonMessage">Nhập lý do để người đặt biết vì sao lịch bị hủy.</div>
+
+                <div class="form-actions full">
+                    <button type="submit" class="primary danger-primary">Xác nhận hủy</button>
+                    <button type="button" class="light" id="cancelReasonBackBtn">Quay lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="app.js"></script>
+</body>
+</html>
