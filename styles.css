@@ -78,8 +78,7 @@ textarea {
     gap: 14px;
 }
 
-.nav-item,
-.logout-btn {
+.nav-item {
     border: 0;
     background: transparent;
     color: #e9eef8;
@@ -92,8 +91,7 @@ textarea {
     transition: 0.18s ease;
 }
 
-.nav-item:hover,
-.logout-btn:hover {
+.nav-item:hover {
     background: rgba(255, 255, 255, 0.08);
 }
 
@@ -103,9 +101,6 @@ textarea {
     box-shadow: 0 12px 25px rgba(37, 99, 235, 0.32);
 }
 
-.logout-btn {
-    margin-top: 60px;
-}
 
 .main {
     flex: 1;
@@ -335,7 +330,7 @@ textarea:focus {
 }
 
 .table-wrap {
-    overflow-x: auto;
+    overflow: visible;
 }
 
 table {
@@ -735,13 +730,8 @@ small {
         gap: 8px;
     }
 
-    .nav-item,
-    .logout-btn {
+    .nav-item {
         white-space: nowrap;
-    }
-
-    .logout-btn {
-        margin: 0 0 0 auto;
     }
 
     .rooms-grid,
@@ -969,17 +959,23 @@ small {
     line-height: 1;
 }
 
+/* Cho menu trạng thái nổi lên phía trên, tránh bị đè/cắt bởi khung bảng */
+.status-dropdown.open {
+    z-index: 1000;
+}
+
 .status-menu {
     position: absolute;
-    top: calc(100% + 8px);
+    top: auto;
+    bottom: calc(100% + 8px);
     left: 0;
-    z-index: 30;
+    z-index: 9999;
     width: 138px;
     padding: 8px;
     border: 1px solid #dce6f3;
     border-radius: 12px;
     background: #fff;
-    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.14);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.18);
     display: none;
 }
 
@@ -1012,6 +1008,22 @@ small {
     filter: brightness(0.97);
 }
 
+
+
+.delete-canceled-booking {
+    border: 1px solid #f3b9b9;
+    background: #fff;
+    color: var(--red);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.delete-canceled-booking:hover {
+    background: var(--red-bg);
+}
 
 /* Ghi chú lý do hủy lịch đặt */
 .status-cell {
@@ -1049,4 +1061,108 @@ small {
 
 .danger-primary:hover {
     background: #b91c1c;
+}
+
+.participants-cell {
+    max-width: 170px;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.participant-select {
+    min-width: 132px;
+    min-height: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.participant-select.green {
+    background: var(--green-bg);
+    color: var(--green);
+    border-color: #bde8c7;
+}
+
+.participant-select.yellow {
+    background: var(--yellow-bg);
+    color: var(--yellow);
+    border-color: #f0d58a;
+}
+
+.participant-select.red {
+    background: var(--red-bg);
+    color: var(--red);
+    border-color: #f3b9b9;
+}
+
+.booking-actions {
+    min-width: 128px;
+}
+
+.mini-action.danger {
+    color: var(--red);
+}
+
+.large-table-panel .table-wrap {
+    overflow: visible;
+}
+
+/* Chi tiết cuộc họp trong lịch sử sử dụng */
+.history-detail-card {
+    width: min(760px, 100%);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.detail-item {
+    border: 1px solid #e4ecf7;
+    background: #f8fbff;
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.detail-item.full {
+    grid-column: 1 / -1;
+}
+
+.detail-item span {
+    display: block;
+    color: #7b8aa0;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.detail-item strong {
+    display: block;
+    color: #102033;
+    font-size: 13px;
+    line-height: 1.55;
+    word-break: break-word;
+}
+
+.danger-detail {
+    border-color: #f2b7b7;
+    background: #fff0f0;
+}
+
+.danger-detail strong {
+    color: #ca3b3b;
+}
+
+.detail-actions {
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+@media (max-width: 760px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
 }
