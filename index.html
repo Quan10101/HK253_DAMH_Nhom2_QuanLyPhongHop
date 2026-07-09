@@ -20,8 +20,6 @@
                 <button class="nav-item" data-page="historyPage">Lịch sử sử dụng</button>
                 <button class="nav-item" data-page="freeTimePage">Thời gian trống</button>
             </nav>
-
-            <button class="logout-btn">Đăng xuất</button>
         </aside>
 
         <main class="main">
@@ -30,7 +28,7 @@
                 <div class="user-box">
                     <div class="user-text">
                         <strong>Quản lý phòng họp</strong>
-                        <span>manager@xyz.com</span>
+                        <span>quanly@xyz.com</span>
                     </div>
                     <div class="avatar">QL</div>
                 </div>
@@ -165,7 +163,7 @@
                 <div class="title-block title-with-action">
                     <div>
                         <h2>Lịch đặt phòng</h2>
-                        <p>Xem danh sách các lịch đặt phòng theo thời gian, trạng thái và tạo lịch họp mới.</p>
+                        <p>Xem lịch đặt phòng, người tham gia và cập nhật trạng thái lịch như chờ xác nhận, đã duyệt hoặc đã hủy.</p>
                     </div>
                     <button class="primary title-action" id="openBookingBtn" type="button">+ Tạo lịch họp</button>
                 </div>
@@ -194,8 +192,8 @@
                         <input id="bookingSearch" type="text" placeholder="Tìm theo tên cuộc họp, người đặt..." />
                     </label>
                     <div class="filter-actions">
-                        <button class="light" id="resetBookingBtn">Làm mới</button>
-                        <button class="primary" id="viewBookingBtn">Xem lịch</button>
+                        <button class="light" id="resetBookingBtn" type="button" title="Xóa các bộ lọc và đưa bộ lọc về mặc định">Làm mới</button>
+                        <button class="primary" id="viewBookingBtn" type="button" title="Áp dụng bộ lọc để xem lịch đặt phòng">Xem lịch</button>
                     </div>
                 </section>
 
@@ -210,8 +208,9 @@
                                     <th>Giờ bắt đầu</th>
                                     <th>Giờ kết thúc</th>
                                     <th>Tên cuộc họp</th>
-                                    <th>Người đặt</th>
-                                    <th>Trạng thái</th>
+                                    <th>Người tạo</th>
+                                    <th>Người tham gia</th>
+                                    <th>Trạng thái lịch</th>
                                 </tr>
                             </thead>
                             <tbody id="bookingTable"></tbody>
@@ -279,6 +278,7 @@
                                     <th>Tên cuộc họp</th>
                                     <th>Người tổ chức</th>
                                     <th>Số người</th>
+                                    <th>Chi tiết</th>
                                 </tr>
                             </thead>
                             <tbody id="historyTable"></tbody>
@@ -363,6 +363,11 @@
                 </label>
 
                 <label>
+                    Người tạo cuộc họp
+                    <input id="meetingOwner" type="text" maxlength="100" placeholder="VD: Nguyễn Văn An" required />
+                </label>
+
+                <label>
                     Ngày họp
                     <input id="meetingDate" type="date" required />
                 </label>
@@ -379,7 +384,7 @@
 
                 <label class="full">
                     Người tham gia
-                    <input id="meetingParticipants" type="text" placeholder="VD: an@company.com, binh@company.com" />
+                    <input id="meetingParticipants" type="text" placeholder="VD: an@xyz.com, binh@xyz.com" />
                 </label>
 
                 <label class="full">
@@ -390,7 +395,7 @@
                 <div class="message full modal-message" id="bookingFormMessage">Điền thông tin để tạo lịch họp mới.</div>
 
                 <div class="form-actions full">
-                    <button type="submit" class="primary">Xác nhận tạo</button>
+                    <button type="submit" class="primary" id="bookingSubmitBtn">Xác nhận tạo</button>
                     <button type="button" class="light" id="cancelBookingBtn">Hủy</button>
                 </div>
             </form>
@@ -423,6 +428,23 @@
         </div>
     </div>
 
+    <div class="modal" id="historyDetailModal" aria-hidden="true">
+        <div class="modal-card history-detail-card" role="dialog" aria-modal="true" aria-labelledby="historyDetailTitle">
+            <div class="modal-header">
+                <div>
+                    <h3 id="historyDetailTitle">Chi tiết cuộc họp đã sử dụng</h3>
+                    <p>Thông tin được lấy từ lịch sử sử dụng phòng họp.</p>
+                </div>
+                <button class="icon-btn" id="closeHistoryDetailBtn" type="button" aria-label="Đóng">×</button>
+            </div>
+
+            <div id="historyDetailContent"></div>
+
+            <div class="form-actions detail-actions">
+                <button type="button" class="primary" id="historyDetailCloseBtn">Đóng</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
