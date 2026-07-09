@@ -55,7 +55,8 @@ function loadState() {
         return normalizeState({
             rooms: parsed.rooms || structuredClone(sampleData.rooms),
             bookings: parsed.bookings || structuredClone(sampleData.bookings),
-            history: parsed.history || structuredClone(sampleData.history)
+            history: parsed.history || structuredClone(sampleData.history),
+            notifications: parsed.notifications || []
         });
     } catch (error) {
         return normalizeState(structuredClone(sampleData));
@@ -99,7 +100,8 @@ function normalizeState(raw) {
     return {
         rooms,
         bookings,
-        history
+        history,
+        notifications: normalizeNotifications(raw.notifications || [])
     };
 }
 
@@ -113,6 +115,31 @@ function formatDate(dateText) {
     return `${day}/${month}/${year}`;
 }
 
+function toIsoDate(dateText) {
+    const value = String(dateText || "").trim();
+    if (!value) return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+
+    const parts = value.split(/[\/.-]/).map((part) => part.trim());
+    if (parts.length !== 3) return "";
+
+    const [day, month, year] = parts;
+    if (!day || !month || !year) return "";
+    return `${year.padStart(4, "0")}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+}
+
+function parseDateRange(rangeText) {
+    const parts = String(rangeText || "")
+        .split(/\s*(?:→|->|-)\s*/g)
+        .map((part) => part.trim())
+        .filter(Boolean);
+
+    return {
+        from: toIsoDate(parts[0]),
+        to: toIsoDate(parts[1])
+    };
+}
+
 function normalize(text) {
     return String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -124,6 +151,112 @@ function escapeHtml(text) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+
+
+function normalizeNotifications(items) {
+    return (items || []).map((item, index) => ({
+        id: item.id || `TB-${Date.now()}-${index}`,
+        type: item.type || "info",
+        title: item.title || "Thông báo",
+        message: item.message || "Có cập nhật mới trong hệ thống.",
+        time: item.time || new Date().toISOString(),
+        read: Boolean(item.read)
+    }));
+}
+
+function notificationTimeText(timeText) {
+    const date = new Date(timeText);
+    if (Number.isNaN(date.getTime())) return "Vừa xong";
+    return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")} ${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+}
+
+function addNotification(type, title, message, saveNow = true) {
+    if (!state.notifications) state.notifications = [];
+    state.notifications.unshift({
+        id: `TB-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        type,
+        title,
+        message,
+        time: new Date().toISOString(),
+        read: false
+    });
+    state.notifications = state.notifications.slice(0, 50);
+    showToast(title, message);
+    if (saveNow) saveState();
+    renderNotifications();
+}
+
+function showToast(title, message) {
+    let container = document.getElementById("toastContainer");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "toastContainer";
+        container.className = "toast-container";
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.className = "toast-message";
+    toast.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 20);
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 250);
+    }, 3300);
+}
+
+function renderNotifications() {
+    const notifications = state.notifications || [];
+    const unreadCount = notifications.filter((item) => !item.read).length;
+
+    if ($("notificationBadge")) {
+        $("notificationBadge").textContent = unreadCount;
+        $("notificationBadge").classList.toggle("hide", unreadCount === 0);
+    }
+    if ($("headerNotificationBadge")) {
+        $("headerNotificationBadge").textContent = unreadCount;
+        $("headerNotificationBadge").classList.toggle("hide", unreadCount === 0);
+    }
+    if ($("unreadNotificationTotal")) $("unreadNotificationTotal").textContent = unreadCount;
+    if ($("notificationTotal")) $("notificationTotal").textContent = notifications.length;
+
+    const list = $("notificationList");
+    if (!list) return;
+
+    if (!notifications.length) {
+        list.innerHTML = `<div class="empty notification-empty">Chưa có thông báo nào.</div>`;
+        return;
+    }
+
+    list.innerHTML = notifications.map((item) => `
+        <div class="notification-item ${item.read ? "read" : "unread"}">
+            <div class="notification-dot ${escapeHtml(item.type)}"></div>
+            <div class="notification-content">
+                <div class="notification-title-row">
+                    <strong>${escapeHtml(item.title)}</strong>
+                    <span>${notificationTimeText(item.time)}</span>
+                </div>
+                <p>${escapeHtml(item.message)}</p>
+            </div>
+        </div>
+    `).join("");
+}
+
+function markAllNotificationsRead() {
+    (state.notifications || []).forEach((item) => item.read = true);
+    saveState();
+    renderNotifications();
+}
+
+function clearNotifications() {
+    if (!(state.notifications || []).length) return;
+    if (!confirm("Xóa toàn bộ thông báo?")) return;
+    state.notifications = [];
+    saveState();
+    renderNotifications();
 }
 
 function statusClass(status) {
@@ -303,9 +436,11 @@ function saveRoom(event) {
         state.bookings = state.bookings.map((booking) => booking.roomCode === editingRoomCode ? { ...booking, roomName: name } : booking);
         state.history = state.history.map((history) => history.roomCode === editingRoomCode ? { ...history, roomName: name } : history);
         setRoomMessage("Đã cập nhật thông tin phòng họp.", "success");
+        addNotification("room", "Cập nhật phòng họp", `Đã cập nhật ${code} - ${name}.`, false);
     } else {
         state.rooms.push({ code, name, capacity, status, devices });
         setRoomMessage("Đã thêm phòng họp mới.", "success");
+        addNotification("room", "Thêm phòng họp", `Đã thêm ${code} - ${name}.`, false);
     }
 
     saveState();
@@ -342,6 +477,7 @@ function deleteRoom() {
 
     state.rooms = state.rooms.filter((item) => item.code !== code);
     state.bookings = state.bookings.filter((booking) => booking.roomCode !== code);
+    addNotification("room", "Xóa phòng họp", `Đã xóa ${room.code} - ${room.name}.`, false);
     resetRoomForm();
     setRoomMessage("Đã xóa phòng họp khỏi danh sách.", "success");
 
@@ -431,6 +567,7 @@ function handleBookingAction(id, action) {
     if (action === "approve") {
         booking.status = "Đã duyệt";
         booking.cancelReason = "";
+        addNotification("approve", "Lịch họp đã được duyệt", `${booking.title} tại ${booking.roomName} ngày ${formatDate(booking.date)}.`, false);
         saveState();
         renderBookings();
         renderHistory();
@@ -488,12 +625,14 @@ function submitCancelReason(event) {
 
     booking.status = "Đã hủy";
     booking.cancelReason = reason;
+    addNotification("cancel", "Lịch họp đã bị hủy", `${booking.title} tại ${booking.roomName}. Lý do: ${reason}`, false);
 
     saveState();
     closeCancelReasonModal();
     renderBookings();
     renderHistory();
     renderFreeTime();
+    renderNotifications();
 }
 
 function deleteCanceledBooking(id) {
@@ -510,6 +649,7 @@ function deleteCanceledBooking(id) {
 
     const timeText = `${booking.start} - ${booking.end}`;
     state.bookings = state.bookings.filter((item) => item.id !== id);
+    addNotification("delete", "Đã xóa lịch đã hủy", `${booking.title} đã được xóa khỏi trang Lịch đặt phòng.`, false);
     state.history = state.history.filter((item) => !(
         item.status === "Đã hủy" &&
         item.roomCode === booking.roomCode &&
@@ -521,6 +661,7 @@ function deleteCanceledBooking(id) {
     renderBookings();
     renderHistory();
     renderFreeTime();
+    renderNotifications();
 }
 
 function minutesFromTime(timeText) {
@@ -600,6 +741,7 @@ function bookingToHistoryItem(booking) {
 function renderHistory() {
     const roomKeyword = normalize($("historyRoomSearch").value);
     const keyword = normalize($("historySearch").value);
+    const dateRange = parseDateRange($("historyDateRange").value);
 
     const completedBookings = state.bookings
         .filter((booking) => booking.status === "Đã hoàn thành")
@@ -610,34 +752,58 @@ function renderHistory() {
 
     const result = allHistory.filter((item) => {
         const matchRoom = normalize(`${item.roomCode} ${item.roomName}`).includes(roomKeyword);
-        const matchKeyword = normalize(`${item.title} ${item.organizer} ${item.cancelReason || ""}`).includes(keyword);
-        return matchRoom && matchKeyword;
+        const matchKeyword = normalize(`${item.title} ${item.organizer} ${item.participants || ""} ${item.cancelReason || ""}`).includes(keyword);
+        const matchFrom = !dateRange.from || item.date >= dateRange.from;
+        const matchTo = !dateRange.to || item.date <= dateRange.to;
+        return matchRoom && matchKeyword && matchFrom && matchTo;
     });
 
     const totalHours = result.reduce((sum, item) => sum + Number(item.hours || 0), 0);
     const roomCount = result.reduce((map, item) => {
-        map[item.roomCode] = (map[item.roomCode] || 0) + 1;
+        if (!map[item.roomCode]) map[item.roomCode] = { count: 0, name: item.roomName };
+        map[item.roomCode].count += 1;
+        map[item.roomCode].name = item.roomName || map[item.roomCode].name;
         return map;
     }, {});
 
-    let topCode = result[0]?.roomCode || "PH-A01";
+    const userCount = result.reduce((map, item) => {
+        const organizer = item.organizer || "Không rõ";
+        map[organizer] = (map[organizer] || 0) + 1;
+        return map;
+    }, {});
+
+    let topCode = "";
+    let topRoomName = "";
     let topCount = 0;
-    Object.entries(roomCount).forEach(([code, count]) => {
-        if (count > topCount) {
+    Object.entries(roomCount).forEach(([code, info]) => {
+        if (info.count > topCount) {
             topCode = code;
-            topCount = count;
+            topRoomName = info.name;
+            topCount = info.count;
         }
     });
 
-    const topRoom = state.rooms.find((room) => room.code === topCode) || { code: topCode, name: "Phòng họp A" };
+    let topUser = "Chưa có dữ liệu";
+    let topUserCount = 0;
+    Object.entries(userCount).forEach(([name, count]) => {
+        if (count > topUserCount) {
+            topUser = name;
+            topUserCount = count;
+        }
+    });
+
+    const topRoom = state.rooms.find((room) => room.code === topCode) || { code: topCode || "Chưa có", name: topRoomName || "dữ liệu" };
 
     $("historyTotal").textContent = result.length;
-    $("historyTopRoom").textContent = `${topRoom.code} - ${topRoom.name}`;
+    $("historyTopRoom").textContent = result.length ? `${topRoom.code} - ${topRoom.name}` : "Chưa có dữ liệu";
     $("historyTopCount").textContent = `${topCount} lượt sử dụng`;
+    $("historyTopUser").textContent = topUser;
+    $("historyTopUserCount").textContent = `${topUserCount} lượt sử dụng`;
     $("historyHours").textContent = `${totalHours.toFixed(totalHours % 1 === 0 ? 0 : 1)} giờ`;
 
     const tbody = $("historyTable");
     if (!result.length) {
+        currentHistoryDetailItems = [];
         tbody.innerHTML = `<tr><td colspan="8" class="empty">Không có lịch sử sử dụng phù hợp.</td></tr>`;
         $("historyResultText").textContent = "Hiển thị 0 đến 0 của 0 kết quả";
         return;
@@ -886,9 +1052,11 @@ function saveBookingFromForm(event) {
     if (editingBookingId) {
         state.bookings = state.bookings.map((booking) => booking.id === editingBookingId ? formData : booking);
         setBookingFormMessage("Đã cập nhật cuộc họp thành công.", "success");
+        addNotification("booking", "Cập nhật lịch họp", `${formData.title} tại ${formData.roomName} ngày ${formatDate(formData.date)}.`, false);
     } else {
         state.bookings.push(formData);
         setBookingFormMessage("Tạo lịch họp thành công. Lịch đang ở trạng thái Chờ xác nhận.", "success");
+        addNotification("booking", "Có lịch họp mới", `${formData.title} đang chờ xác nhận tại ${formData.roomName}.`, false);
     }
 
     saveState();
@@ -916,6 +1084,7 @@ function autoCompletePastBookings() {
         if (booking.status === "Đã duyệt") {
             if (booking.date < currentDate || (booking.date === currentDate && booking.end <= currentTime)) {
                 booking.status = "Đã hoàn thành";
+                addNotification("done", "Lịch họp đã hoàn thành", `${booking.title} tại ${booking.roomName} đã chuyển sang lịch sử sử dụng.`, false);
                 isChanged = true;
             }
         }
@@ -931,6 +1100,7 @@ function renderAll() {
     renderBookings();
     renderHistory();
     renderFreeTime();
+    renderNotifications();
 }
 
 function setupEvents() {
@@ -976,6 +1146,10 @@ function setupEvents() {
     $("historySearchBtn").addEventListener("click", renderHistory);
     $("historySearch").addEventListener("input", renderHistory);
     $("historyRoomSearch").addEventListener("input", renderHistory);
+    $("historyDateRange").addEventListener("change", renderHistory);
+    $("historyDateRange").addEventListener("keyup", (event) => {
+        if (event.key === "Enter") renderHistory();
+    });
     $("historyResetBtn").addEventListener("click", () => {
         $("historyRoomSearch").value = "";
         $("historyDateRange").value = "01/05/2024 → 31/05/2024";
@@ -988,7 +1162,14 @@ function setupEvents() {
     $("freeDateInput").addEventListener("change", renderFreeTime);
     $("freeSearch").addEventListener("input", renderFreeTime);
     $("freeShiftSelect").addEventListener("change", renderFreeTime);
+
+    if ($("headerNotificationBtn")) {
+        $("headerNotificationBtn").addEventListener("click", () => activatePage("notificationPage"));
+    }
+    if ($("markAllReadBtn")) $("markAllReadBtn").addEventListener("click", markAllNotificationsRead);
+    if ($("clearNotificationsBtn")) $("clearNotificationsBtn").addEventListener("click", clearNotifications);
 }
+
 
 function setupStorageEventListener() {
     window.addEventListener("storage", (event) => {
