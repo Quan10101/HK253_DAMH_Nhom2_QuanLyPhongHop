@@ -1,4 +1,4 @@
-const STORAGE_KEY = "meeting-room-ui-nhom2-v7";
+const STORAGE_KEY = "meeting-room-ui-nhom2-us10-us20-v2";
 const BOOKING_STATUSES = ["Chờ xác nhận", "Đã duyệt", "Đã hủy", "Đã hoàn thành"];
 
 const sampleData = {
@@ -10,27 +10,29 @@ const sampleData = {
         { code: "PH-F06", name: "Phòng họp F", capacity: 16, status: "Bảo trì", devices: { projector: 1, camera: 0, micro: 2, board: 1 } }
     ],
     bookings: [
-        { id: "BK-001", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-16", start: "08:30", end: "10:00", title: "Họp Ban Giám đốc", owner: "Nguyễn Văn An", people: 10, participants: "", note: "", status: "Chờ xác nhận" },
-        { id: "BK-002", roomCode: "PH-B02", roomName: "Phòng họp B", date: "2025-05-16", start: "10:30", end: "11:30", title: "Họp phòng Kinh doanh", owner: "Trần Thị Bình", people: 8, participants: "", note: "", status: "Đã duyệt" },
-        { id: "BK-003", roomCode: "PH-C03", roomName: "Phòng họp C", date: "2025-05-16", start: "13:30", end: "15:00", title: "Đào tạo sản phẩm mới", owner: "Lê Minh Cường", people: 18, participants: "", note: "", status: "Chờ xác nhận" },
-        { id: "BK-004", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-16", start: "15:30", end: "16:30", title: "Họp dự án XYZ", owner: "Phạm Thu Hà", people: 12, participants: "", note: "", status: "Đã duyệt" },
+        { id: "BK-001", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-16", start: "08:30", end: "10:00", title: "Họp Ban Giám đốc", owner: "Nguyễn Văn An", people: 10, participants: "binh@xyz.com, cuong@xyz.com", note: "", status: "Chờ xác nhận" },
+        { id: "BK-002", roomCode: "PH-B02", roomName: "Phòng họp B", date: "2025-05-16", start: "10:30", end: "11:30", title: "Họp phòng Kinh doanh", owner: "Trần Thị Bình", people: 8, participants: "an@xyz.com", note: "", status: "Đã duyệt" },
+        { id: "BK-003", roomCode: "PH-C03", roomName: "Phòng họp C", date: "2025-05-16", start: "13:30", end: "15:00", title: "Đào tạo sản phẩm mới", owner: "Lê Minh Cường", people: 18, participants: "ha@xyz.com", note: "", status: "Chờ xác nhận" },
+        { id: "BK-004", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-16", start: "15:30", end: "16:30", title: "Họp dự án XYZ", owner: "Phạm Thu Hà", people: 12, participants: "an@xyz.com, nam@xyz.com", note: "", status: "Đã duyệt" },
         { id: "BK-005", roomCode: "PH-E05", roomName: "Phòng đào tạo E", date: "2025-05-16", start: "09:00", end: "10:00", title: "Review thiết kế", owner: "Đỗ Hoàng Nam", people: 6, participants: "", note: "", status: "Đã hủy", cancelReason: "Phòng đào tạo E cần bảo trì thiết bị." },
-        { id: "BK-006", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-23", start: "09:00", end: "10:30", title: "Họp phòng Kinh doanh", owner: "Nguyễn Văn Nam", people: 9, participants: "", note: "", status: "Đã duyệt" },
-        { id: "BK-007", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-23", start: "11:30", end: "13:30", title: "Họp Ban Giám đốc", owner: "Trần Thị Mai", people: 14, participants: "", note: "", status: "Đã duyệt" },
-        { id: "BK-008", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-23", start: "14:00", end: "15:30", title: "Họp dự án XYZ", owner: "Lê Hoàng Anh", people: 11, participants: "", note: "", status: "Đã duyệt" }
+        { id: "BK-006", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-23", start: "09:00", end: "10:30", title: "Họp phòng Kinh doanh", owner: "Nguyễn Văn Nam", people: 9, participants: "binh@xyz.com", note: "", status: "Đã duyệt" },
+        { id: "BK-007", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-23", start: "11:30", end: "13:30", title: "Họp Ban Giám đốc", owner: "Trần Thị Mai", people: 14, participants: "an@xyz.com, ha@xyz.com", note: "", status: "Đã duyệt" },
+        { id: "BK-008", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-23", start: "14:00", end: "15:30", title: "Họp dự án XYZ", owner: "Lê Hoàng Anh", people: 11, participants: "nam@xyz.com", note: "", status: "Đã duyệt" }
     ],
     history: [
-        { roomCode: "PH-A01", roomName: "Phòng họp A", date: "2024-05-31", time: "09:00 - 10:30", title: "Họp kế hoạch Marketing Q2", organizer: "Nguyễn Văn An", people: 12, hours: 1.5 },
-        { roomCode: "PH-B02", roomName: "Phòng họp B", date: "2024-05-31", time: "14:00 - 15:30", title: "Họp dự án ABC - Sprint 5", organizer: "Trần Thị Bình", people: 8, hours: 1.5 },
-        { roomCode: "PH-C03", roomName: "Phòng họp C", date: "2024-05-30", time: "13:30 - 15:00", title: "Training sản phẩm mới", organizer: "Phạm Thu Hà", people: 20, hours: 1.5 },
-        { roomCode: "PH-A01", roomName: "Phòng họp A", date: "2024-05-29", time: "09:30 - 11:00", title: "Họp chiến lược quý 2", organizer: "Nguyễn Văn An", people: 16, hours: 1.5 },
-        { roomCode: "PH-D04", roomName: "Phòng họp D", date: "2024-05-28", time: "09:00 - 10:00", title: "Phỏng vấn ứng viên", organizer: "Huỳnh Đức Long", people: 3, hours: 1 }
+        { roomCode: "PH-A01", roomName: "Phòng họp A", date: "2024-05-31", start: "09:00", end: "10:30", time: "09:00 - 10:30", title: "Họp kế hoạch Marketing Q2", organizer: "Nguyễn Văn An", people: 12, participants: "marketing@xyz.com, sale@xyz.com", note: "Tổng kết kế hoạch Marketing quý 2 và phân công nội dung truyền thông.", status: "Đã hoàn thành", hours: 1.5 },
+        { roomCode: "PH-B02", roomName: "Phòng họp B", date: "2024-05-31", start: "14:00", end: "15:30", time: "14:00 - 15:30", title: "Họp dự án ABC - Sprint 5", organizer: "Trần Thị Bình", people: 8, participants: "dev1@xyz.com, dev2@xyz.com", note: "Review tiến độ sprint 5 và các lỗi cần xử lý.", status: "Đã hoàn thành", hours: 1.5 },
+        { roomCode: "PH-C03", roomName: "Phòng họp C", date: "2024-05-30", start: "13:30", end: "15:00", time: "13:30 - 15:00", title: "Training sản phẩm mới", organizer: "Phạm Thu Hà", people: 20, participants: "sales@xyz.com, support@xyz.com", note: "Đào tạo tính năng sản phẩm mới cho bộ phận kinh doanh và hỗ trợ.", status: "Đã hoàn thành", hours: 1.5 },
+        { roomCode: "PH-A01", roomName: "Phòng họp A", date: "2024-05-29", start: "09:30", end: "11:00", time: "09:30 - 11:00", title: "Họp chiến lược quý 2", organizer: "Nguyễn Văn An", people: 16, participants: "manager@xyz.com, lead@xyz.com", note: "Trao đổi mục tiêu kinh doanh quý 2.", status: "Đã hoàn thành", hours: 1.5 },
+        { roomCode: "PH-D04", roomName: "Phòng họp D", date: "2024-05-28", start: "09:00", end: "10:00", time: "09:00 - 10:00", title: "Phỏng vấn ứng viên", organizer: "Huỳnh Đức Long", people: 3, participants: "hr@xyz.com", note: "Phỏng vấn vị trí thực tập sinh phát triển phần mềm.", status: "Đã hoàn thành", hours: 1 }
     ]
 };
 
 let state = loadState();
 let editingRoomCode = null;
+let editingBookingId = null;
 let pendingCancelBookingId = null;
+let currentHistoryDetailItems = [];
 
 function $(id) {
     return document.getElementById(id);
@@ -38,6 +40,11 @@ function $(id) {
 
 function today() {
     return new Date().toISOString().slice(0, 10);
+}
+
+function currentTimeText() {
+    const now = new Date();
+    return String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
 }
 
 function loadState() {
@@ -78,7 +85,7 @@ function normalizeState(raw) {
             start: booking.start || "09:00",
             end: booking.end || "10:00",
             title: booking.title || "Cuộc họp mới",
-            owner: booking.owner || "Võ Hoàng Quân",
+            owner: booking.owner || "Nguyễn Văn An",
             people: Number(booking.people || 1),
             participants: booking.participants || "",
             note: booking.note || "",
@@ -87,10 +94,12 @@ function normalizeState(raw) {
         };
     });
 
+    const history = (raw.history || structuredClone(sampleData.history)).map(normalizeHistoryItem);
+
     return {
         rooms,
         bookings,
-        history: raw.history || structuredClone(sampleData.history)
+        history
     };
 }
 
@@ -118,8 +127,8 @@ function escapeHtml(text) {
 }
 
 function statusClass(status) {
-    if (["Hoạt động", "Trống", "Đã hoàn thành"].includes(status)) return "green";
-    if (["Bảo trì", "Chờ xác nhận"].includes(status)) return "yellow";
+    if (["Hoạt động", "Trống", "Đã hoàn thành", "Đồng ý"].includes(status)) return "green";
+    if (["Bảo trì", "Chờ xác nhận", "Chưa phản hồi"].includes(status)) return "yellow";
     if (["Đã duyệt"].includes(status)) return "blue";
     if (["Đã hủy"].includes(status)) return "red";
     return "gray";
@@ -138,19 +147,19 @@ function deviceTags(devices) {
     return tags;
 }
 
-function statusOptions(selected) {
-    return BOOKING_STATUSES.map((status) => `<option value="${status}" ${status === selected ? "selected" : ""}>${status}</option>`).join("");
-}
 
 function renderBookingStatus(booking) {
-    if (booking.status === "Chờ xác nhận") {
+    if (booking.status === "Chờ xác nhận" || booking.status === "Đã duyệt") {
+        const approveBtn = booking.status === "Chờ xác nhận"
+            ? `<button type="button" data-booking-action="approve" data-booking-id="${booking.id}">Duyệt</button>`
+            : "";
         return `
             <div class="status-dropdown" data-booking-id="${booking.id}">
-                <button class="badge badge-button yellow" type="button" data-status-toggle="${booking.id}">
-                    Chờ xác nhận <span class="chevron">▾</span>
+                <button class="badge badge-button ${statusClass(booking.status)}" type="button" data-status-toggle="${booking.id}">
+                    ${booking.status} <span class="chevron">▾</span>
                 </button>
                 <div class="status-menu">
-                    <button type="button" data-booking-action="approve" data-booking-id="${booking.id}">Duyệt</button>
+                    ${approveBtn}
                     <button type="button" data-booking-action="cancel" data-booking-id="${booking.id}">Hủy</button>
                 </div>
             </div>
@@ -159,7 +168,13 @@ function renderBookingStatus(booking) {
 
     if (booking.status === "Đã hủy") {
         const reason = booking.cancelReason ? `<small class="cancel-reason">Lý do: ${escapeHtml(booking.cancelReason)}</small>` : "";
-        return `<div class="status-cell"><span class="badge red">Đã hủy</span>${reason}</div>`;
+        return `
+            <div class="status-cell">
+                <span class="badge red">Đã hủy</span>
+                ${reason}
+                <button class="delete-canceled-booking" type="button" data-booking-action="delete-canceled" data-booking-id="${booking.id}">Xóa khỏi lịch đặt</button>
+            </div>
+        `;
     }
 
     return `<span class="badge ${statusClass(booking.status)}">${booking.status}</span>`;
@@ -287,10 +302,10 @@ function saveRoom(event) {
         state.rooms = state.rooms.map((room) => room.code === editingRoomCode ? { code, name, capacity, status, devices } : room);
         state.bookings = state.bookings.map((booking) => booking.roomCode === editingRoomCode ? { ...booking, roomName: name } : booking);
         state.history = state.history.map((history) => history.roomCode === editingRoomCode ? { ...history, roomName: name } : history);
-        setRoomMessage("Đã cập nhật thông tin phòng họp. Có thể bấm Làm mới form để thêm phòng khác.", "success");
+        setRoomMessage("Đã cập nhật thông tin phòng họp.", "success");
     } else {
         state.rooms.push({ code, name, capacity, status, devices });
-        setRoomMessage("Đã thêm phòng họp mới. Bạn có thể tiếp tục nhập phòng khác hoặc chọn dòng trong bảng để sửa.", "success");
+        setRoomMessage("Đã thêm phòng họp mới.", "success");
     }
 
     saveState();
@@ -311,10 +326,24 @@ function deleteRoom() {
         return;
     }
 
+    const futureBookings = state.bookings.filter((booking) =>
+        booking.roomCode === code &&
+        booking.status !== "Đã hủy" &&
+        booking.status !== "Đã hoàn thành" &&
+        booking.date >= today()
+    );
+
+    if (futureBookings.length) {
+        setRoomMessage("Phòng đang có lịch đặt trong tương lai nên không thể xóa. Hãy hủy hoặc đổi phòng cho các lịch đó trước.", "error");
+        return;
+    }
+
+    if (!confirm(`Bạn có chắc muốn xóa ${room.code} - ${room.name}?`)) return;
+
     state.rooms = state.rooms.filter((item) => item.code !== code);
     state.bookings = state.bookings.filter((booking) => booking.roomCode !== code);
     resetRoomForm();
-    setRoomMessage("Đã xóa phòng họp khỏi danh sách và xóa các lịch đặt liên quan.", "success");
+    setRoomMessage("Đã xóa phòng họp khỏi danh sách.", "success");
 
     saveState();
     refreshSelects();
@@ -339,13 +368,14 @@ function renderBookings() {
         const matchRoom = room === "all" || booking.roomCode === room;
         const matchDate = !date || booking.date === date;
         const matchStatus = status === "all" || booking.status === status;
-        const matchKeyword = normalize(`${booking.title} ${booking.owner}`).includes(keyword);
-        return matchRoom && matchDate && matchStatus && matchKeyword;
+        const matchKeyword = normalize(`${booking.title} ${booking.owner} ${booking.participants} ${booking.roomName} ${booking.roomCode}`).includes(keyword);
+        const notCompleted = booking.status !== "Đã hoàn thành";
+        return matchRoom && matchDate && matchStatus && matchKeyword && notCompleted;
     });
 
     const tbody = $("bookingTable");
     if (!result.length) {
-        tbody.innerHTML = `<tr><td colspan="8" class="empty">Không có lịch đặt phòng phù hợp.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="empty">Không có lịch đặt phòng phù hợp.</td></tr>`;
         return;
     }
 
@@ -356,8 +386,9 @@ function renderBookings() {
             <td>${formatDate(booking.date)}</td>
             <td>${booking.start}</td>
             <td>${booking.end}</td>
-            <td>${booking.title}</td>
-            <td>${booking.owner}</td>
+            <td>${escapeHtml(booking.title)}</td>
+            <td>${escapeHtml(booking.owner)}</td>
+            <td class="participants-cell">${escapeHtml(booking.participants || "Chưa mời")}</td>
             <td>${renderBookingStatus(booking)}</td>
         </tr>
     `).join("");
@@ -373,17 +404,27 @@ function renderBookings() {
         });
     });
 
-    tbody.querySelectorAll(".status-menu button").forEach((button) => {
-        button.addEventListener("click", () => handleBookingAction(button.dataset.bookingId, button.dataset.bookingAction));
+    tbody.querySelectorAll("[data-booking-action]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            handleBookingAction(button.dataset.bookingId, button.dataset.bookingAction);
+        });
     });
+
 }
+
 
 function handleBookingAction(id, action) {
     const booking = state.bookings.find((item) => item.id === id);
     if (!booking) return;
 
-    if (booking.status !== "Chờ xác nhận") {
-        alert("Chỉ lịch đang Chờ xác nhận mới được duyệt hoặc hủy.");
+    if (action === "delete-canceled") {
+        deleteCanceledBooking(id);
+        return;
+    }
+
+    if (booking.status !== "Chờ xác nhận" && booking.status !== "Đã duyệt") {
+        alert("Chỉ lịch đang Chờ xác nhận hoặc Đã duyệt mới được thao tác.");
         return;
     }
 
@@ -397,17 +438,21 @@ function handleBookingAction(id, action) {
         return;
     }
 
-    if (action === "cancel") {
-        openCancelReasonModal(id);
-    }
+    if (action === "cancel") openCancelReasonModal(id);
 }
 
 function openCancelReasonModal(id) {
-    pendingCancelBookingId = id;
     const booking = state.bookings.find((item) => item.id === id);
-    const detail = booking ? `${booking.title} - ${booking.roomName} (${formatDate(booking.date)} ${booking.start} - ${booking.end})` : "";
+    if (!booking) return;
+    if (booking.status === "Đã hủy" || booking.status === "Đã hoàn thành") {
+        alert("Lịch đã hủy hoặc đã hoàn thành không thể hủy tiếp.");
+        return;
+    }
+
+    pendingCancelBookingId = id;
+    const detail = `${booking.title} - ${booking.roomName} (${formatDate(booking.date)} ${booking.start} - ${booking.end})`;
     $("cancelBookingDetail").textContent = detail;
-    $("cancelReasonInput").value = "";
+    $("cancelReasonInput").value = booking.cancelReason || "";
     setCancelReasonMessage("Nhập lý do để người đặt biết vì sao lịch bị hủy.");
     $("cancelReasonModal").classList.add("show");
     $("cancelReasonModal").setAttribute("aria-hidden", "false");
@@ -451,6 +496,33 @@ function submitCancelReason(event) {
     renderFreeTime();
 }
 
+function deleteCanceledBooking(id) {
+    const booking = state.bookings.find((item) => item.id === id);
+    if (!booking) return;
+
+    if (booking.status !== "Đã hủy") {
+        alert("Chỉ lịch đã hủy mới được xóa khỏi trang lịch đặt phòng.");
+        return;
+    }
+
+    const agree = confirm("Xóa lịch đã hủy khỏi trang Lịch đặt phòng? Lịch đã hủy sẽ không đưa vào Lịch sử sử dụng.");
+    if (!agree) return;
+
+    const timeText = `${booking.start} - ${booking.end}`;
+    state.bookings = state.bookings.filter((item) => item.id !== id);
+    state.history = state.history.filter((item) => !(
+        item.status === "Đã hủy" &&
+        item.roomCode === booking.roomCode &&
+        item.date === booking.date &&
+        item.time === timeText &&
+        item.title === booking.title
+    ));
+    saveState();
+    renderBookings();
+    renderHistory();
+    renderFreeTime();
+}
+
 function minutesFromTime(timeText) {
     const [hour, minute] = String(timeText).split(":").map(Number);
     return hour * 60 + minute;
@@ -464,7 +536,8 @@ function getActiveBookings(roomCode, date) {
     return state.bookings.filter((booking) =>
         booking.roomCode === roomCode &&
         booking.date === date &&
-        booking.status !== "Đã hủy"
+        booking.status !== "Đã hủy" &&
+        booking.status !== "Đã hoàn thành"
     );
 }
 
@@ -472,15 +545,52 @@ function bookingHours(booking) {
     return (minutesFromTime(booking.end) - minutesFromTime(booking.start)) / 60;
 }
 
+function splitHistoryTime(timeText) {
+    const [start = "", end = ""] = String(timeText || "").split(" - ");
+    return { start: start.trim(), end: end.trim() };
+}
+
+function normalizeHistoryItem(item, index = 0) {
+    const timeParts = splitHistoryTime(item.time);
+    const start = item.start || timeParts.start || "09:00";
+    const end = item.end || timeParts.end || "10:00";
+    return {
+        id: item.id || item.historyId || `HS-${String(index + 1).padStart(3, "0")}`,
+        roomCode: item.roomCode || item.roomId || "",
+        roomName: item.roomName || "Không rõ",
+        date: item.date || today(),
+        start,
+        end,
+        time: item.time || `${start} - ${end}`,
+        title: item.title || "Cuộc họp đã sử dụng",
+        organizer: item.organizer || item.owner || "Không rõ",
+        people: Number(item.people || 1),
+        participants: item.participants || "",
+        note: item.note || "",
+        status: item.status || "Đã hoàn thành",
+        cancelReason: item.cancelReason || "",
+        hours: Number(item.hours || durationHours(start, end) || 0)
+    };
+}
+
+function durationHours(start, end) {
+    return (minutesFromTime(end) - minutesFromTime(start)) / 60;
+}
+
 function bookingToHistoryItem(booking) {
     return {
+        id: booking.id,
         roomCode: booking.roomCode,
         roomName: booking.roomName,
         date: booking.date,
+        start: booking.start,
+        end: booking.end,
         time: `${booking.start} - ${booking.end}`,
         title: booking.title,
         organizer: booking.owner,
         people: booking.people || 1,
+        participants: booking.participants || "",
+        note: booking.note || "",
         hours: bookingHours(booking),
         status: booking.status,
         cancelReason: booking.cancelReason || ""
@@ -491,11 +601,12 @@ function renderHistory() {
     const roomKeyword = normalize($("historyRoomSearch").value);
     const keyword = normalize($("historySearch").value);
 
-    const completedOrCanceled = state.bookings
-        .filter((booking) => ["Đã hoàn thành", "Đã hủy"].includes(booking.status))
+    const completedBookings = state.bookings
+        .filter((booking) => booking.status === "Đã hoàn thành")
         .map(bookingToHistoryItem);
 
-    const allHistory = [...state.history, ...completedOrCanceled];
+    const allHistory = [...state.history, ...completedBookings]
+        .filter((item) => item.status !== "Đã hủy");
 
     const result = allHistory.filter((item) => {
         const matchRoom = normalize(`${item.roomCode} ${item.roomName}`).includes(roomKeyword);
@@ -527,30 +638,67 @@ function renderHistory() {
 
     const tbody = $("historyTable");
     if (!result.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="empty">Không có lịch sử sử dụng phù hợp.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="empty">Không có lịch sử sử dụng phù hợp.</td></tr>`;
         $("historyResultText").textContent = "Hiển thị 0 đến 0 của 0 kết quả";
         return;
     }
 
-    tbody.innerHTML = result.map((item) => `
+    currentHistoryDetailItems = result;
+
+    tbody.innerHTML = result.map((item, index) => `
         <tr>
             <td>${item.roomCode}</td>
             <td>${item.roomName}</td>
             <td>${formatDate(item.date)}</td>
             <td>${item.time}</td>
-            <td>${escapeHtml(item.title)}${item.cancelReason ? `<small class="cancel-reason history-reason">Lý do hủy: ${escapeHtml(item.cancelReason)}</small>` : ""}</td>
-            <td>${item.organizer}</td>
+            <td>${escapeHtml(item.title)}</td>
+            <td>${escapeHtml(item.organizer)}</td>
             <td>${item.people}</td>
+            <td><button class="mini-action" type="button" data-history-detail="${index}">Xem chi tiết</button></td>
         </tr>
     `).join("");
 
+    tbody.querySelectorAll("[data-history-detail]").forEach((button) => {
+        button.addEventListener("click", () => openHistoryDetailModal(Number(button.dataset.historyDetail)));
+    });
+
     $("historyResultText").textContent = `Hiển thị 1 đến ${result.length} của ${result.length} kết quả`;
+}
+
+function openHistoryDetailModal(index) {
+    const item = currentHistoryDetailItems[index];
+    if (!item) return;
+
+    $("historyDetailTitle").textContent = item.title || "Chi tiết cuộc họp";
+    $("historyDetailContent").innerHTML = `
+        <div class="detail-grid">
+            <div class="detail-item"><span>Mã phòng</span><strong>${escapeHtml(item.roomCode)}</strong></div>
+            <div class="detail-item"><span>Tên phòng</span><strong>${escapeHtml(item.roomName)}</strong></div>
+            <div class="detail-item"><span>Ngày sử dụng</span><strong>${formatDate(item.date)}</strong></div>
+            <div class="detail-item"><span>Thời gian</span><strong>${escapeHtml(item.time)}</strong></div>
+            <div class="detail-item"><span>Người tổ chức</span><strong>${escapeHtml(item.organizer)}</strong></div>
+            <div class="detail-item"><span>Số người</span><strong>${item.people}</strong></div>
+            <div class="detail-item"><span>Số giờ sử dụng</span><strong>${Number(item.hours || 0).toFixed(Number(item.hours || 0) % 1 === 0 ? 0 : 1)} giờ</strong></div>
+            <div class="detail-item"><span>Trạng thái</span><strong><span class="badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></strong></div>
+            <div class="detail-item full"><span>Người tham gia</span><strong>${escapeHtml(item.participants || "Chưa có thông tin")}</strong></div>
+            <div class="detail-item full"><span>Nội dung / ghi chú cuộc họp</span><strong>${escapeHtml(item.note || "Không có ghi chú")}</strong></div>
+            ${item.cancelReason && item.status !== "Đã hủy" ? `<div class="detail-item full danger-detail"><span>Ghi chú trạng thái</span><strong>${escapeHtml(item.cancelReason)}</strong></div>` : ""}
+        </div>
+    `;
+
+    $("historyDetailModal").classList.add("show");
+    $("historyDetailModal").setAttribute("aria-hidden", "false");
+}
+
+function closeHistoryDetailModal() {
+    $("historyDetailModal").classList.remove("show");
+    $("historyDetailModal").setAttribute("aria-hidden", "true");
 }
 
 function renderFreeTime() {
     const selectedRoomCode = $("freeRoomSelect").value || state.rooms[0]?.code;
     const selectedRoom = state.rooms.find((room) => room.code === selectedRoomCode) || state.rooms[0];
-    const date = $("freeDateInput").value || "2025-05-23";
+    const date = $("freeDateInput").value || today();
     const keyword = normalize($("freeSearch").value);
 
     if (!selectedRoom) return;
@@ -638,13 +786,36 @@ function durationText(timeText) {
     return `${mins} phút`;
 }
 
-function openBookingModal(roomCode = "") {
+function openBookingModal(roomCode = "", bookingId = "") {
+    editingBookingId = bookingId;
     $("bookingModal").classList.add("show");
     $("bookingModal").setAttribute("aria-hidden", "false");
+
+    if (bookingId) {
+        const booking = state.bookings.find((item) => item.id === bookingId);
+        if (!booking) return;
+        $("bookingModalTitle").textContent = "Sửa thông tin cuộc họp";
+        $("bookingSubmitBtn").textContent = "Lưu thay đổi";
+        $("meetingTitle").value = booking.title;
+        $("meetingRoom").value = booking.roomCode;
+        $("meetingPeople").value = booking.people;
+        $("meetingDate").value = booking.date;
+        $("meetingStart").value = booking.start;
+        $("meetingEnd").value = booking.end;
+        $("meetingOwner").value = booking.owner;
+        $("meetingParticipants").value = booking.participants;
+        $("meetingNote").value = booking.note;
+        setBookingFormMessage("Đang sửa cuộc họp. Sau khi lưu, hệ thống sẽ kiểm tra lại trùng lịch phòng.");
+        return;
+    }
+
+    $("bookingModalTitle").textContent = "Tạo lịch họp mới";
+    $("bookingSubmitBtn").textContent = "Xác nhận tạo";
+    $("bookingForm").reset();
     $("meetingDate").value = today();
     $("meetingStart").value = "09:00";
     $("meetingEnd").value = "10:00";
-    $("meetingPeople").value = "";
+    $("meetingOwner").value = "Nguyễn Văn An";
     if (roomCode) $("meetingRoom").value = roomCode;
     setBookingFormMessage("Điền thông tin để tạo lịch họp mới.");
 }
@@ -653,6 +824,7 @@ function closeBookingModal() {
     $("bookingModal").classList.remove("show");
     $("bookingModal").setAttribute("aria-hidden", "true");
     $("bookingForm").reset();
+    editingBookingId = null;
     setBookingFormMessage("Điền thông tin để tạo lịch họp mới.");
 }
 
@@ -663,68 +835,97 @@ function setBookingFormMessage(text, type = "") {
     message.textContent = text;
 }
 
-function validateBooking(formData) {
+function validateBooking(formData, ignoreId = "") {
     const room = state.rooms.find((item) => item.code === formData.roomCode);
     if (!room) return "Phòng họp không tồn tại.";
     if (room.status !== "Hoạt động") return "Phòng họp này không ở trạng thái hoạt động nên không thể đặt lịch.";
     if (!formData.title) return "Vui lòng nhập tiêu đề cuộc họp.";
+    if (!formData.owner) return "Vui lòng nhập người tạo cuộc họp.";
     if (!formData.people || formData.people <= 0) return "Số người phải là số nguyên dương.";
     if (formData.people > room.capacity) return `Số người vượt quá sức chứa của ${room.name}.`;
     if (!formData.date || !formData.start || !formData.end) return "Vui lòng nhập đầy đủ ngày họp, giờ bắt đầu và giờ kết thúc.";
     if (formData.start >= formData.end) return "Thời gian kết thúc phải lớn hơn thời gian bắt đầu.";
     if (formData.date < today()) return "Không được chọn ngày trong quá khứ.";
+    if (formData.date === today() && formData.start <= currentTimeText()) {
+        return "Không được tạo lịch có giờ bắt đầu đã qua. Vui lòng chọn giờ bắt đầu lớn hơn giờ hiện tại.";
+    }
 
     const duplicated = getActiveBookings(formData.roomCode, formData.date)
-        .some((booking) => isOverlap(formData.start, formData.end, booking.start, booking.end));
+        .some((booking) => booking.id !== ignoreId && isOverlap(formData.start, formData.end, booking.start, booking.end));
     if (duplicated) return "Phòng đã có lịch trong khung giờ này. Vui lòng chọn thời gian khác.";
     return "";
 }
 
-function createBooking(event) {
+function saveBookingFromForm(event) {
     event.preventDefault();
+    autoCompletePastBookings();
     const roomCode = $("meetingRoom").value;
     const room = state.rooms.find((item) => item.code === roomCode);
     const formData = {
-        id: `BK-${Date.now()}`,
+        id: editingBookingId || `BK-${Date.now()}`,
         roomCode,
         roomName: room?.name || "Không rõ",
         date: $("meetingDate").value,
         start: $("meetingStart").value,
         end: $("meetingEnd").value,
         title: $("meetingTitle").value.trim(),
-        owner: "Võ Hoàng Quân",
+        owner: $("meetingOwner").value.trim(),
         people: Number($("meetingPeople").value),
         participants: $("meetingParticipants").value.trim(),
         note: $("meetingNote").value.trim(),
-        status: "Chờ xác nhận"
+        status: editingBookingId ? (state.bookings.find((item) => item.id === editingBookingId)?.status || "Chờ xác nhận") : "Chờ xác nhận",
+        cancelReason: editingBookingId ? (state.bookings.find((item) => item.id === editingBookingId)?.cancelReason || "") : ""
     };
 
-    const error = validateBooking(formData);
+    const error = validateBooking(formData, editingBookingId);
     if (error) {
         setBookingFormMessage(error, "error");
         return;
     }
 
-    state.bookings.push(formData);
+    if (editingBookingId) {
+        state.bookings = state.bookings.map((booking) => booking.id === editingBookingId ? formData : booking);
+        setBookingFormMessage("Đã cập nhật cuộc họp thành công.", "success");
+    } else {
+        state.bookings.push(formData);
+        setBookingFormMessage("Tạo lịch họp thành công. Lịch đang ở trạng thái Chờ xác nhận.", "success");
+    }
+
     saveState();
     refreshSelects();
-
     $("bookingRoomFilter").value = "all";
     $("bookingDateFilter").value = formData.date;
     $("bookingStatusFilter").value = "all";
     $("bookingSearch").value = "";
     $("freeRoomSelect").value = formData.roomCode;
     $("freeDateInput").value = formData.date;
-
     renderAll();
-    setBookingFormMessage("Tạo lịch họp thành công. Lịch đang ở trạng thái Chờ xác nhận.", "success");
+
     setTimeout(() => {
         closeBookingModal();
         activatePage("bookingPage");
     }, 650);
 }
 
+function autoCompletePastBookings() {
+    const currentDate = today();
+    const currentTime = currentTimeText();
+    let isChanged = false;
+
+    state.bookings.forEach((booking) => {
+        if (booking.status === "Đã duyệt") {
+            if (booking.date < currentDate || (booking.date === currentDate && booking.end <= currentTime)) {
+                booking.status = "Đã hoàn thành";
+                isChanged = true;
+            }
+        }
+    });
+
+    if (isChanged) saveState();
+}
+
 function renderAll() {
+    autoCompletePastBookings();
     renderStats();
     renderRooms();
     renderBookings();
@@ -745,9 +946,14 @@ function setupEvents() {
     $("cancelReasonForm").addEventListener("submit", submitCancelReason);
     $("closeCancelReasonBtn").addEventListener("click", closeCancelReasonModal);
     $("cancelReasonBackBtn").addEventListener("click", closeCancelReasonModal);
-    $("bookingForm").addEventListener("submit", createBooking);
+    $("closeHistoryDetailBtn").addEventListener("click", closeHistoryDetailModal);
+    $("historyDetailCloseBtn").addEventListener("click", closeHistoryDetailModal);
+    $("bookingForm").addEventListener("submit", saveBookingFromForm);
     $("bookingModal").addEventListener("click", (event) => {
         if (event.target.id === "bookingModal") closeBookingModal();
+    });
+    $("historyDetailModal").addEventListener("click", (event) => {
+        if (event.target.id === "historyDetailModal") closeHistoryDetailModal();
     });
 
     document.addEventListener("click", () => {
@@ -761,7 +967,7 @@ function setupEvents() {
     $("bookingStatusFilter").addEventListener("change", renderBookings);
     $("resetBookingBtn").addEventListener("click", () => {
         $("bookingRoomFilter").value = "all";
-        $("bookingDateFilter").value = "2025-05-16";
+        $("bookingDateFilter").value = today();
         $("bookingStatusFilter").value = "all";
         $("bookingSearch").value = "";
         renderBookings();
@@ -784,10 +990,23 @@ function setupEvents() {
     $("freeShiftSelect").addEventListener("change", renderFreeTime);
 }
 
+function setupStorageEventListener() {
+    window.addEventListener("storage", (event) => {
+        if (event.key === STORAGE_KEY) {
+            state = loadState();
+            refreshSelects();
+            renderAll();
+        }
+    });
+}
+
 function init() {
     setupNavigation();
     refreshSelects();
+    if ($("bookingDateFilter")) $("bookingDateFilter").value = today();
+    if ($("freeDateInput")) $("freeDateInput").value = today();
     setupEvents();
+    setupStorageEventListener();
     saveState();
     renderAll();
 }
