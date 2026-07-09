@@ -19,6 +19,7 @@
                 <button class="nav-item" data-page="bookingPage">Lịch đặt phòng</button>
                 <button class="nav-item" data-page="historyPage">Lịch sử sử dụng</button>
                 <button class="nav-item" data-page="freeTimePage">Thời gian trống</button>
+                <button class="nav-item notify-nav" data-page="notificationPage">Thông báo <span class="nav-badge" id="notificationBadge">0</span></button>
             </nav>
         </aside>
 
@@ -26,6 +27,10 @@
             <header class="user-header">
                 <div></div>
                 <div class="user-box">
+                    <button class="notification-icon" id="headerNotificationBtn" type="button" title="Xem thông báo">
+                        🔔
+                        <span id="headerNotificationBadge">0</span>
+                    </button>
                     <div class="user-text">
                         <strong>Quản lý phòng họp</strong>
                         <span>quanly@xyz.com</span>
@@ -241,6 +246,11 @@
                         <em id="historyTopCount">0 lượt sử dụng</em>
                     </div>
                     <div class="stat-card">
+                        <span>Người dùng phòng nhiều nhất</span>
+                        <strong class="small-strong" id="historyTopUser">Chưa có dữ liệu</strong>
+                        <em id="historyTopUserCount">0 lượt sử dụng</em>
+                    </div>
+                    <div class="stat-card">
                         <span>Tổng giờ sử dụng</span>
                         <strong id="historyHours">0 giờ</strong>
                         <em>Trong khoảng thời gian đã chọn</em>
@@ -331,6 +341,34 @@
                         <div id="roomInfoContent"></div>
                     </aside>
                 </div>
+            </section>
+
+            <section class="page" id="notificationPage">
+                <div class="title-block title-with-action">
+                    <div>
+                        <h2>Thông báo</h2>
+                        <p>Hiển thị các thay đổi mới như tạo lịch, duyệt lịch, hủy lịch, hoàn thành lịch và cập nhật phòng họp.</p>
+                    </div>
+                    <div class="notification-actions">
+                        <button class="light" id="markAllReadBtn" type="button">Đánh dấu đã đọc</button>
+                        <button class="light danger-light" id="clearNotificationsBtn" type="button">Xóa thông báo</button>
+                    </div>
+                </div>
+
+                <div class="stats notification-stats">
+                    <div class="stat-card">
+                        <span>Thông báo chưa đọc</span>
+                        <strong id="unreadNotificationTotal">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Tổng thông báo</span>
+                        <strong id="notificationTotal">0</strong>
+                    </div>
+                </div>
+
+                <section class="panel notification-panel">
+                    <div class="notification-list" id="notificationList"></div>
+                </section>
             </section>
         </main>
     </div>
