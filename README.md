@@ -56,3 +56,11 @@ File `database.sql` gồm 3 bảng chính:
 - Nút **Làm mới** dùng để xóa bộ lọc về mặc định; nút **Xem lịch** dùng để áp dụng bộ lọc hiện tại.
 
 - Lịch sử sử dụng chỉ lưu các cuộc họp đã hoàn thành; lịch đã hủy không được đưa vào lịch sử.
+
+- Màn hình Lịch sử sử dụng đã bổ sung thống kê **Người dùng phòng nhiều nhất**.
+- Nút **Tìm kiếm** ở Lịch sử sử dụng đã lọc được theo mã/tên phòng, khoảng ngày và từ khóa.
+
+## Cập nhật thông báo
+- Bổ sung menu **Thông báo** và biểu tượng chuông ở góc trên bên phải.
+- Khi có thao tác mới như tạo lịch họp, duyệt lịch, hủy lịch, xóa lịch đã hủy, thêm/sửa/xóa phòng hoặc lịch tự chuyển sang **Đã hoàn thành**, hệ thống sẽ tạo thông báo.
+- Thông báo có số lượng chưa đọc, có thể bấm **Đánh dấu đã đọc** hoặc **Xóa thông báo**.
