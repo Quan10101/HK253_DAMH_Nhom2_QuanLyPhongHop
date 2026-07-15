@@ -19,7 +19,6 @@
                 <button class="nav-item" data-page="bookingPage">Lịch đặt phòng</button>
                 <button class="nav-item" data-page="historyPage">Lịch sử sử dụng</button>
                 <button class="nav-item" data-page="freeTimePage">Thời gian trống</button>
-                <button class="nav-item notify-nav" data-page="notificationPage">Thông báo <span class="nav-badge" id="notificationBadge">0</span></button>
             </nav>
         </aside>
 
@@ -45,14 +44,18 @@
                     <p>Thêm, sửa, xóa và xem danh sách phòng họp trong công ty XYZ.</p>
                 </div>
 
-                <div class="stats three">
+                <div class="stats room-status-stats">
                     <div class="stat-card">
                         <span>Tổng số phòng</span>
                         <strong id="totalRooms">0</strong>
                     </div>
                     <div class="stat-card">
-                        <span>Đang hoạt động</span>
-                        <strong id="activeRooms">0</strong>
+                        <span>Phòng trống</span>
+                        <strong id="emptyRooms">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Phòng bận</span>
+                        <strong id="busyRooms">0</strong>
                     </div>
                     <div class="stat-card">
                         <span>Đang bảo trì</span>
@@ -67,8 +70,9 @@
                             <input id="roomSearch" type="text" placeholder="Tìm kiếm theo mã phòng hoặc tên phòng..." />
                             <select id="roomStatusFilter">
                                 <option value="all">Trạng thái</option>
-                                <option value="Hoạt động">Hoạt động</option>
-                                <option value="Bảo trì">Bảo trì</option>
+                                <option value="Trống">Trống</option>
+                                <option value="Bận">Bận</option>
+                                <option value="Bảo Trì">Bảo Trì</option>
                             </select>
                         </div>
 
@@ -122,8 +126,9 @@
                                 <label>
                                     Trạng thái
                                     <select id="roomStatus">
-                                        <option>Hoạt động</option>
-                                        <option>Bảo trì</option>
+                                        <option>Trống</option>
+                                        <option>Bận</option>
+                                        <option>Bảo Trì</option>
                                     </select>
                                 </label>
                             </div>
@@ -342,35 +347,32 @@
                     </aside>
                 </div>
             </section>
-
-            <section class="page" id="notificationPage">
-                <div class="title-block title-with-action">
-                    <div>
-                        <h2>Thông báo</h2>
-                        <p>Hiển thị các thay đổi mới như tạo lịch, duyệt lịch, hủy lịch, hoàn thành lịch và cập nhật phòng họp.</p>
-                    </div>
-                    <div class="notification-actions">
-                        <button class="light" id="markAllReadBtn" type="button">Đánh dấu đã đọc</button>
-                        <button class="light danger-light" id="clearNotificationsBtn" type="button">Xóa thông báo</button>
-                    </div>
-                </div>
-
-                <div class="stats notification-stats">
-                    <div class="stat-card">
-                        <span>Thông báo chưa đọc</span>
-                        <strong id="unreadNotificationTotal">0</strong>
-                    </div>
-                    <div class="stat-card">
-                        <span>Tổng thông báo</span>
-                        <strong id="notificationTotal">0</strong>
-                    </div>
-                </div>
-
-                <section class="panel notification-panel">
-                    <div class="notification-list" id="notificationList"></div>
-                </section>
-            </section>
         </main>
+    </div>
+
+    <div class="modal notification-modal" id="notificationModal" aria-hidden="true">
+        <div class="modal-card notification-modal-card" role="dialog" aria-modal="true" aria-labelledby="notificationModalTitle">
+            <div class="modal-header notification-modal-header">
+                <div>
+                    <h3 id="notificationModalTitle">Thông báo</h3>
+                    <p>Các thay đổi mới về phòng họp và lịch đặt phòng.</p>
+                </div>
+                <button class="icon-btn" id="closeNotificationBtn" type="button" aria-label="Đóng">×</button>
+            </div>
+
+            <div class="notification-modal-summary">
+                <span>Chưa đọc: <strong id="unreadNotificationTotal">0</strong></span>
+                <span>Tổng: <strong id="notificationTotal">0</strong></span>
+            </div>
+
+            <div class="notification-list notification-modal-list" id="notificationList"></div>
+
+            <div class="notification-modal-actions">
+                <button class="light" id="markAllReadBtn" type="button">Đánh dấu đã đọc</button>
+                <button class="light danger-light" id="clearNotificationsBtn" type="button">Xóa thông báo</button>
+                <button class="primary" id="notificationCloseBtn" type="button">Đóng</button>
+            </div>
+        </div>
     </div>
 
 
