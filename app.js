@@ -3,11 +3,11 @@ const BOOKING_STATUSES = ["Chờ xác nhận", "Đã duyệt", "Đã hủy", "Đ
 
 const sampleData = {
     rooms: [
-        { code: "PH-A01", name: "Phòng họp A", capacity: 20, status: "Hoạt động", devices: { projector: 1, camera: 1, micro: 2, board: 1 } },
-        { code: "PH-B02", name: "Phòng họp B", capacity: 12, status: "Bảo trì", devices: { projector: 1, camera: 0, micro: 1, board: 1 } },
-        { code: "PH-C03", name: "Phòng họp C", capacity: 30, status: "Hoạt động", devices: { projector: 2, camera: 1, micro: 3, board: 1 } },
-        { code: "PH-E05", name: "Phòng đào tạo E", capacity: 40, status: "Hoạt động", devices: { projector: 2, camera: 1, micro: 4, board: 2 } },
-        { code: "PH-F06", name: "Phòng họp F", capacity: 16, status: "Bảo trì", devices: { projector: 1, camera: 0, micro: 2, board: 1 } }
+        { code: "PH-A01", name: "Phòng họp A", capacity: 20, status: "Trống", devices: { projector: 1, camera: 1, micro: 2, board: 1 } },
+        { code: "PH-B02", name: "Phòng họp B", capacity: 12, status: "Bảo Trì", devices: { projector: 1, camera: 0, micro: 1, board: 1 } },
+        { code: "PH-C03", name: "Phòng họp C", capacity: 30, status: "Trống", devices: { projector: 2, camera: 1, micro: 3, board: 1 } },
+        { code: "PH-E05", name: "Phòng đào tạo E", capacity: 40, status: "Trống", devices: { projector: 2, camera: 1, micro: 4, board: 2 } },
+        { code: "PH-F06", name: "Phòng họp F", capacity: 16, status: "Bảo Trì", devices: { projector: 1, camera: 0, micro: 2, board: 1 } }
     ],
     bookings: [
         { id: "BK-001", roomCode: "PH-A01", roomName: "Phòng họp A", date: "2025-05-16", start: "08:30", end: "10:00", title: "Họp Ban Giám đốc", owner: "Nguyễn Văn An", people: 10, participants: "binh@xyz.com, cuong@xyz.com", note: "", status: "Chờ xác nhận" },
@@ -68,7 +68,7 @@ function normalizeState(raw) {
         code: room.code || room.id,
         name: room.name,
         capacity: Number(room.capacity || 1),
-        status: room.status === "Ngưng sử dụng" ? "Bảo trì" : (room.status || "Hoạt động"),
+        status: (["Ngưng sử dụng", "Bảo trì", "Bảo Trì"].includes(room.status) ? "Bảo Trì" : (room.status === "Bận" ? "Bận" : "Trống")),
         devices: typeof room.devices === "string"
             ? { projector: room.devices.includes("Máy chiếu") ? 1 : 0, camera: room.devices.includes("Camera") || room.devices.includes("Webcam") ? 1 : 0, micro: room.devices.includes("Micro") ? 1 : 0, board: room.devices.includes("Bảng") ? 1 : 0 }
             : { projector: Number(room.devices?.projector || 0), camera: Number(room.devices?.camera || 0), micro: Number(room.devices?.micro || 0), board: Number(room.devices?.board || 0) }
@@ -260,9 +260,9 @@ function clearNotifications() {
 }
 
 function statusClass(status) {
-    if (["Hoạt động", "Trống", "Đã hoàn thành", "Đồng ý"].includes(status)) return "green";
-    if (["Bảo trì", "Chờ xác nhận", "Chưa phản hồi"].includes(status)) return "yellow";
-    if (["Đã duyệt"].includes(status)) return "blue";
+    if (["Trống", "Đã hoàn thành", "Đồng ý"].includes(status)) return "green";
+    if (["Bảo Trì", "Chờ xác nhận", "Chưa phản hồi"].includes(status)) return "yellow";
+    if (["Đã duyệt", "Bận"].includes(status)) return "blue";
     if (["Đã hủy"].includes(status)) return "red";
     return "gray";
 }
@@ -328,8 +328,9 @@ function activatePage(pageId) {
 
 function renderStats() {
     $("totalRooms").textContent = state.rooms.length;
-    $("activeRooms").textContent = state.rooms.filter((room) => room.status === "Hoạt động").length;
-    $("maintainRooms").textContent = state.rooms.filter((room) => room.status === "Bảo trì").length;
+    $("emptyRooms").textContent = state.rooms.filter((room) => room.status === "Trống").length;
+    $("busyRooms").textContent = state.rooms.filter((room) => room.status === "Bận").length;
+    $("maintainRooms").textContent = state.rooms.filter((room) => room.status === "Bảo Trì").length;
 }
 
 function renderRooms() {
@@ -369,7 +370,7 @@ function resetRoomForm() {
     $("roomCode").value = "";
     $("roomName").value = "";
     $("roomCapacity").value = 20;
-    $("roomStatus").value = "Hoạt động";
+    $("roomStatus").value = "Trống";
     $("projector").value = 1;
     $("camera").value = 1;
     $("micro").value = 2;
@@ -1004,7 +1005,7 @@ function setBookingFormMessage(text, type = "") {
 function validateBooking(formData, ignoreId = "") {
     const room = state.rooms.find((item) => item.code === formData.roomCode);
     if (!room) return "Phòng họp không tồn tại.";
-    if (room.status !== "Hoạt động") return "Phòng họp này không ở trạng thái hoạt động nên không thể đặt lịch.";
+    if (room.status === "Bảo Trì") return "Phòng họp đang bảo trì nên không thể đặt lịch.";
     if (!formData.title) return "Vui lòng nhập tiêu đề cuộc họp.";
     if (!formData.owner) return "Vui lòng nhập người tạo cuộc họp.";
     if (!formData.people || formData.people <= 0) return "Số người phải là số nguyên dương.";
@@ -1103,6 +1104,17 @@ function renderAll() {
     renderNotifications();
 }
 
+function openNotificationModal() {
+    renderNotifications();
+    $("notificationModal").classList.add("show");
+    $("notificationModal").setAttribute("aria-hidden", "false");
+}
+
+function closeNotificationModal() {
+    $("notificationModal").classList.remove("show");
+    $("notificationModal").setAttribute("aria-hidden", "true");
+}
+
 function setupEvents() {
     $("roomSearch").addEventListener("input", renderRooms);
     $("roomStatusFilter").addEventListener("change", renderRooms);
@@ -1164,12 +1176,25 @@ function setupEvents() {
     $("freeShiftSelect").addEventListener("change", renderFreeTime);
 
     if ($("headerNotificationBtn")) {
-        $("headerNotificationBtn").addEventListener("click", () => activatePage("notificationPage"));
+        $("headerNotificationBtn").addEventListener("click", openNotificationModal);
     }
     if ($("markAllReadBtn")) $("markAllReadBtn").addEventListener("click", markAllNotificationsRead);
     if ($("clearNotificationsBtn")) $("clearNotificationsBtn").addEventListener("click", clearNotifications);
+    if ($("closeNotificationBtn")) $("closeNotificationBtn").addEventListener("click", closeNotificationModal);
+    if ($("notificationCloseBtn")) $("notificationCloseBtn").addEventListener("click", closeNotificationModal);
+    if ($("notificationModal")) {
+        $("notificationModal").addEventListener("click", (event) => {
+            if (event.target.id === "notificationModal") closeNotificationModal();
+        });
+    }
 }
 
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && $("notificationModal")?.classList.contains("show")) {
+        closeNotificationModal();
+    }
+});
 
 function setupStorageEventListener() {
     window.addEventListener("storage", (event) => {
