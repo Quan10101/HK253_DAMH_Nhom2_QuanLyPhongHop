@@ -23,7 +23,7 @@ CREATE TABLE phong_hop (
     camera INT NOT NULL DEFAULT 0 CHECK (camera >= 0),
     micro INT NOT NULL DEFAULT 0 CHECK (micro >= 0),
     bang_trang INT NOT NULL DEFAULT 0 CHECK (bang_trang >= 0),
-    trang_thai ENUM('Hoạt động', 'Bảo trì') NOT NULL DEFAULT 'Hoạt động',
+    trang_thai ENUM('Trống', 'Bảo Trì', 'Bận') NOT NULL DEFAULT 'Trống',
     ngay_tao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -71,11 +71,11 @@ CREATE TABLE lich_su_su_dung (
 INSERT INTO phong_hop
 (ma_phong, ten_phong, so_cho, may_chieu, camera, micro, bang_trang, trang_thai)
 VALUES
-('PH-A01', 'Phòng họp A', 20, 1, 1, 2, 1, 'Hoạt động'),
-('PH-B02', 'Phòng họp B', 12, 1, 0, 1, 1, 'Bảo trì'),
-('PH-C03', 'Phòng họp C', 30, 2, 1, 3, 1, 'Hoạt động'),
-('PH-E05', 'Phòng đào tạo E', 40, 2, 1, 4, 2, 'Hoạt động'),
-('PH-F06', 'Phòng họp F', 16, 1, 0, 2, 1, 'Bảo trì');
+('PH-A01', 'Phòng họp A', 20, 1, 1, 2, 1, 'Trống'),
+('PH-B02', 'Phòng họp B', 12, 1, 0, 1, 1, 'Bảo Trì'),
+('PH-C03', 'Phòng họp C', 30, 2, 1, 3, 1, 'Trống'),
+('PH-E05', 'Phòng đào tạo E', 40, 2, 1, 4, 2, 'Trống'),
+('PH-F06', 'Phòng họp F', 16, 1, 0, 2, 1, 'Bảo Trì');
 
 INSERT INTO lich_dat_phong
 (ma_lich, ma_phong, ngay_dat, gio_bat_dau, gio_ket_thuc, ten_cuoc_hop, nguoi_tao, so_nguoi, nguoi_tham_gia, noi_dung, trang_thai, ly_do_huy)
