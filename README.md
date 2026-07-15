@@ -5,7 +5,6 @@
 - Dự án: Xây dựng hệ thống đặt lịch họp cho Công ty XYZ
 - Nhóm: Nhóm 2
 - Phạm vi code: chỉnh theo Product Backlog từ US-10 đến US-20
-- Ghi chú: đã bỏ toàn bộ chức năng đăng nhập/đăng xuất vì không còn nằm trong phạm vi code hiện tại.
 
 ## 2. Cách chạy giao diện
 1. Giải nén thư mục code.
@@ -36,12 +35,6 @@ File `database.sql` gồm 3 bảng chính:
 - `lich_dat_phong`: lưu lịch đặt phòng, người tạo, người tham gia và trạng thái lịch.
 - `lich_su_su_dung`: lưu lịch sử sử dụng phòng để thống kê.
 
-## 6. Lưu ý khi chấm/báo cáo
-- Giao diện không còn màn hình đăng nhập.
-- Nút đăng xuất và code xử lý tài khoản đã được xóa.
-- Khi xóa phòng, hệ thống sẽ chặn nếu phòng còn lịch đặt trong tương lai.
-- Trạng thái lịch được thao tác ngay tại cột **Trạng thái lịch**, không dùng cột **Thao tác** riêng.
-
 ## 6. Cập nhật bổ sung
 - Bổ sung chức năng xem thông tin chi tiết cuộc họp đã sử dụng trong màn hình **Lịch sử sử dụng phòng**.
 - Ở mỗi dòng lịch sử có nút **Xem chi tiết** để mở popup hiển thị: mã phòng, tên phòng, ngày sử dụng, thời gian, người tổ chức, số người, số giờ sử dụng, trạng thái lịch, người tham gia, nội dung/ghi chú và lý do hủy nếu có.
@@ -64,3 +57,15 @@ File `database.sql` gồm 3 bảng chính:
 - Bổ sung menu **Thông báo** và biểu tượng chuông ở góc trên bên phải.
 - Khi có thao tác mới như tạo lịch họp, duyệt lịch, hủy lịch, xóa lịch đã hủy, thêm/sửa/xóa phòng hoặc lịch tự chuyển sang **Đã hoàn thành**, hệ thống sẽ tạo thông báo.
 - Thông báo có số lượng chưa đọc, có thể bấm **Đánh dấu đã đọc** hoặc **Xóa thông báo**.
+
+
+## Cập nhật trạng thái phòng họp
+- Trạng thái phòng họp được chuẩn hóa thành đúng 3 giá trị: **Trống**, **Bận**, **Bảo Trì**.
+- Phòng ở trạng thái **Bảo Trì** không thể tạo lịch họp mới.
+- Bộ lọc, form thêm/sửa, thống kê và cơ sở dữ liệu đã được cập nhật đồng bộ.
+
+
+## Cập nhật popup thông báo
+- Đã bỏ mục **Thông báo** khỏi thanh menu bên trái.
+- Khi bấm biểu tượng chuông ở góc trên bên phải, hệ thống mở bảng thông báo dạng popup ở giữa màn hình.
+- Popup hỗ trợ đánh dấu tất cả đã đọc, xóa thông báo và đóng bằng nút ×, nút Đóng, bấm ra ngoài hoặc phím Esc.
