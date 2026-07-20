@@ -549,7 +549,7 @@ small {
 }
 
 .history-filter {
-    grid-template-columns: 1.1fr 1fr 1.2fr auto;
+    grid-template-columns: 1.05fr 0.8fr 0.8fr 1.1fr auto;
 }
 
 .free-filter {
@@ -1419,5 +1419,157 @@ small {
 
     .notification-modal-actions {
         flex-direction: column;
+    }
+}
+
+
+/* Danh sách phòng họp: thao tác bằng popup */
+.rooms-grid {
+    display: block;
+}
+
+.room-list-full {
+    width: 100%;
+    min-height: 520px;
+}
+
+.room-list-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.selected-room-text {
+    margin-top: 8px;
+    color: #52657d;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.room-action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.room-toolbar {
+    align-items: end;
+}
+
+.toolbar-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #26384d;
+}
+
+.toolbar-field input,
+.toolbar-field select {
+    margin-top: 0;
+}
+
+.room-search-field {
+    flex: 1;
+}
+
+.room-status-field {
+    width: 220px;
+}
+
+.rooms-table .select-column {
+    width: 72px;
+    text-align: center;
+}
+
+.room-select-indicator {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #c6d4e6;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: 900;
+}
+
+.selected-room-row {
+    background: #edf5ff;
+    box-shadow: inset 4px 0 0 var(--blue);
+}
+
+.selected-room-row .room-select-indicator {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+.room-table-footer {
+    margin-top: 24px;
+}
+
+.room-modal-card {
+    width: min(720px, 100%);
+}
+
+.room-modal-form {
+    display: grid;
+    gap: 4px;
+}
+
+.room-device-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin: 12px 0 4px;
+}
+
+.room-device-grid input {
+    text-align: center;
+}
+
+.delete-room-card {
+    width: min(520px, 100%);
+}
+
+.delete-room-warning {
+    border: 1px solid #fecaca;
+    background: #fff1f2;
+    color: #991b1b;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.danger-light {
+    color: #dc2626;
+    border-color: #fecaca;
+    background: #fff;
+}
+
+.danger-light:hover {
+    background: #fff1f2;
+}
+
+@media (max-width: 760px) {
+    .room-list-heading,
+    .room-action-buttons {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .room-action-buttons button,
+    .room-status-field {
+        width: 100%;
+    }
+
+    .room-toolbar,
+    .room-device-grid {
+        grid-template-columns: 1fr;
+        display: grid;
     }
 }
