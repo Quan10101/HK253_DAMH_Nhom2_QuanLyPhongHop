@@ -30,6 +30,7 @@ const sampleData = {
 
 let state = loadState();
 let editingRoomCode = null;
+let selectedRoomCode = null;
 let editingBookingId = null;
 let pendingCancelBookingId = null;
 let currentHistoryDetailItems = [];
@@ -40,6 +41,11 @@ function $(id) {
 
 function today() {
     return new Date().toISOString().slice(0, 10);
+}
+
+function firstDayOfCurrentMonth() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
 }
 
 function currentTimeText() {
@@ -338,19 +344,20 @@ function renderRooms() {
     const status = $("roomStatusFilter").value;
 
     const rooms = state.rooms.filter((room) => {
-        const matchKeyword = normalize(`${room.code} ${room.name}`).includes(keyword);
+        const matchKeyword = normalize(room.code).includes(keyword);
         const matchStatus = status === "all" || room.status === status;
         return matchKeyword && matchStatus;
     });
 
     const tbody = $("roomsTable");
     if (!rooms.length) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty">Không tìm thấy phòng họp phù hợp.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="empty">Không tìm thấy phòng họp phù hợp.</td></tr>`;
         return;
     }
 
     tbody.innerHTML = rooms.map((room) => `
-        <tr class="clickable" data-code="${room.code}">
+        <tr class="clickable ${selectedRoomCode === room.code ? "selected-room-row" : ""}" data-code="${room.code}">
+            <td class="select-column"><span class="room-select-indicator">${selectedRoomCode === room.code ? "✓" : ""}</span></td>
             <td>${room.code}</td>
             <td>${room.name}</td>
             <td>${room.capacity}</td>
@@ -360,8 +367,16 @@ function renderRooms() {
     `).join("");
 
     tbody.querySelectorAll("tr[data-code]").forEach((row) => {
-        row.addEventListener("click", () => fillRoomForm(row.dataset.code));
+        row.addEventListener("click", () => selectRoom(row.dataset.code));
     });
+}
+
+function selectRoom(code) {
+    const room = state.rooms.find((item) => item.code === code);
+    if (!room) return;
+    selectedRoomCode = code;
+    $("selectedRoomText").textContent = `Đã chọn: ${room.code} - ${room.name}`;
+    renderRooms();
 }
 
 function resetRoomForm() {
@@ -375,12 +390,12 @@ function resetRoomForm() {
     $("camera").value = 1;
     $("micro").value = 2;
     $("board").value = 1;
-    setRoomMessage("Đang ở chế độ thêm mới. Nhập thông tin rồi bấm Lưu phòng.");
+    setRoomMessage("Nhập đầy đủ thông tin phòng họp.");
 }
 
 function fillRoomForm(code) {
     const room = state.rooms.find((item) => item.code === code);
-    if (!room) return;
+    if (!room) return false;
 
     editingRoomCode = room.code;
     $("roomCode").disabled = true;
@@ -392,12 +407,39 @@ function fillRoomForm(code) {
     $("camera").value = room.devices.camera;
     $("micro").value = room.devices.micro;
     $("board").value = room.devices.board;
-    setRoomMessage(`Đang chỉnh sửa ${room.code} - ${room.name}.`, "success");
+    setRoomMessage(`Đang sửa ${room.code} - ${room.name}.`);
+    return true;
+}
+
+function openRoomModal(mode) {
+    if (mode === "edit") {
+        if (!selectedRoomCode) {
+            showToast("Chưa chọn phòng", "Hãy chọn một phòng trong danh sách trước khi sửa.");
+            return;
+        }
+        if (!fillRoomForm(selectedRoomCode)) return;
+        $("roomModalTitle").textContent = "Sửa phòng họp";
+        $("roomSubmitBtn").textContent = "Lưu thay đổi";
+    } else {
+        resetRoomForm();
+        $("roomModalTitle").textContent = "Thêm phòng họp";
+        $("roomSubmitBtn").textContent = "Thêm phòng";
+    }
+
+    $("roomModal").classList.add("show");
+    $("roomModal").setAttribute("aria-hidden", "false");
+    setTimeout(() => $(mode === "edit" ? "roomName" : "roomCode").focus(), 50);
+}
+
+function closeRoomModal() {
+    $("roomModal").classList.remove("show");
+    $("roomModal").setAttribute("aria-hidden", "true");
+    resetRoomForm();
 }
 
 function setRoomMessage(text, type = "") {
     const message = $("roomMessage");
-    message.className = "message";
+    message.className = "message modal-message";
     if (type) message.classList.add(type);
     message.textContent = text;
 }
@@ -436,29 +478,59 @@ function saveRoom(event) {
         state.rooms = state.rooms.map((room) => room.code === editingRoomCode ? { code, name, capacity, status, devices } : room);
         state.bookings = state.bookings.map((booking) => booking.roomCode === editingRoomCode ? { ...booking, roomName: name } : booking);
         state.history = state.history.map((history) => history.roomCode === editingRoomCode ? { ...history, roomName: name } : history);
-        setRoomMessage("Đã cập nhật thông tin phòng họp.", "success");
+        selectedRoomCode = code;
         addNotification("room", "Cập nhật phòng họp", `Đã cập nhật ${code} - ${name}.`, false);
     } else {
         state.rooms.push({ code, name, capacity, status, devices });
-        setRoomMessage("Đã thêm phòng họp mới.", "success");
+        selectedRoomCode = code;
         addNotification("room", "Thêm phòng họp", `Đã thêm ${code} - ${name}.`, false);
     }
 
     saveState();
     refreshSelects();
     renderAll();
+    $("selectedRoomText").textContent = `Đã chọn: ${code} - ${name}`;
+    closeRoomModal();
+}
+
+function openDeleteRoomModal() {
+    if (!selectedRoomCode) {
+        showToast("Chưa chọn phòng", "Hãy chọn một phòng trong danh sách trước khi xóa.");
+        return;
+    }
+
+    const room = state.rooms.find((item) => item.code === selectedRoomCode);
+    if (!room) {
+        showToast("Không tìm thấy phòng", "Phòng đã chọn không còn tồn tại.");
+        selectedRoomCode = null;
+        renderRooms();
+        return;
+    }
+
+    $("deleteRoomDetail").textContent = `${room.code} - ${room.name}`;
+    $("deleteRoomMessage").className = "message modal-message";
+    $("deleteRoomMessage").textContent = "Kiểm tra thông tin trước khi xác nhận.";
+    $("deleteRoomModal").classList.add("show");
+    $("deleteRoomModal").setAttribute("aria-hidden", "false");
+}
+
+function closeDeleteRoomModal() {
+    $("deleteRoomModal").classList.remove("show");
+    $("deleteRoomModal").setAttribute("aria-hidden", "true");
 }
 
 function deleteRoom() {
-    const code = $("roomCode").value.trim().toUpperCase();
+    const code = selectedRoomCode;
     if (!code) {
-        setRoomMessage("Vui lòng chọn phòng cần xóa.", "error");
+        closeDeleteRoomModal();
+        showToast("Chưa chọn phòng", "Hãy chọn phòng cần xóa.");
         return;
     }
 
     const room = state.rooms.find((item) => item.code === code);
     if (!room) {
-        setRoomMessage("Không tìm thấy phòng cần xóa.", "error");
+        $("deleteRoomMessage").className = "message modal-message error";
+        $("deleteRoomMessage").textContent = "Không tìm thấy phòng cần xóa.";
         return;
     }
 
@@ -470,21 +542,21 @@ function deleteRoom() {
     );
 
     if (futureBookings.length) {
-        setRoomMessage("Phòng đang có lịch đặt trong tương lai nên không thể xóa. Hãy hủy hoặc đổi phòng cho các lịch đó trước.", "error");
+        $("deleteRoomMessage").className = "message modal-message error";
+        $("deleteRoomMessage").textContent = "Phòng đang có lịch đặt trong tương lai. Hãy hủy hoặc đổi phòng cho các lịch đó trước.";
         return;
     }
-
-    if (!confirm(`Bạn có chắc muốn xóa ${room.code} - ${room.name}?`)) return;
 
     state.rooms = state.rooms.filter((item) => item.code !== code);
     state.bookings = state.bookings.filter((booking) => booking.roomCode !== code);
     addNotification("room", "Xóa phòng họp", `Đã xóa ${room.code} - ${room.name}.`, false);
-    resetRoomForm();
-    setRoomMessage("Đã xóa phòng họp khỏi danh sách.", "success");
+    selectedRoomCode = null;
+    $("selectedRoomText").textContent = "Chưa chọn phòng họp.";
 
     saveState();
     refreshSelects();
     renderAll();
+    closeDeleteRoomModal();
 }
 
 function refreshSelects() {
@@ -742,10 +814,16 @@ function bookingToHistoryItem(booking) {
 function renderHistory() {
     const roomKeyword = normalize($("historyRoomSearch").value);
     const keyword = normalize($("historySearch").value);
-    const dateRange = parseDateRange($("historyDateRange").value);
+    const dateFrom = $("historyDateFrom").value;
+    const dateTo = $("historyDateTo").value;
 
     const completedBookings = state.bookings
-        .filter((booking) => booking.status === "Đã hoàn thành")
+        .filter((booking) => {
+            if (booking.status !== "Đã hoàn thành") return false;
+            const currentDate = today();
+            const currentTime = currentTimeText();
+            return booking.date < currentDate || (booking.date === currentDate && booking.end <= currentTime);
+        })
         .map(bookingToHistoryItem);
 
     const allHistory = [...state.history, ...completedBookings]
@@ -754,9 +832,9 @@ function renderHistory() {
     const result = allHistory.filter((item) => {
         const matchRoom = normalize(`${item.roomCode} ${item.roomName}`).includes(roomKeyword);
         const matchKeyword = normalize(`${item.title} ${item.organizer} ${item.participants || ""} ${item.cancelReason || ""}`).includes(keyword);
-        const matchFrom = !dateRange.from || item.date >= dateRange.from;
-        const matchTo = !dateRange.to || item.date <= dateRange.to;
-        return matchRoom && matchKeyword && matchFrom && matchTo;
+        const matchDateFrom = !dateFrom || item.date >= dateFrom;
+        const matchDateTo = !dateTo || item.date <= dateTo;
+        return matchRoom && matchKeyword && matchDateFrom && matchDateTo;
     });
 
     const totalHours = result.reduce((sum, item) => sum + Number(item.hours || 0), 0);
@@ -892,7 +970,6 @@ function renderFreeTime() {
         if (booking) return { time: range.time, type: "booked", text: `Đã đặt: ${booking.title}`, person: booking.owner };
         return { time: range.time, type: "free", text: "Trống", person: "" };
     });
-
     const shift = $("freeShiftSelect").value;
     const shiftedSlots = baseSlots.filter((slot) => {
         const start = slot.time.slice(0, 5);
@@ -982,7 +1059,7 @@ function openBookingModal(roomCode = "", bookingId = "") {
     $("meetingDate").value = today();
     $("meetingStart").value = "09:00";
     $("meetingEnd").value = "10:00";
-    $("meetingOwner").value = "Nguyễn Văn An";
+    $("meetingOwner").value = "";
     if (roomCode) $("meetingRoom").value = roomCode;
     setBookingFormMessage("Điền thông tin để tạo lịch họp mới.");
 }
@@ -1012,6 +1089,9 @@ function validateBooking(formData, ignoreId = "") {
     if (formData.people > room.capacity) return `Số người vượt quá sức chứa của ${room.name}.`;
     if (!formData.date || !formData.start || !formData.end) return "Vui lòng nhập đầy đủ ngày họp, giờ bắt đầu và giờ kết thúc.";
     if (formData.start >= formData.end) return "Thời gian kết thúc phải lớn hơn thời gian bắt đầu.";
+    if (formData.start < "08:00" || formData.end > "17:00") {
+        return "Chỉ được tạo lịch họp trong khung giờ từ 08:00 đến 17:00.";
+    }
     if (formData.date < today()) return "Không được chọn ngày trong quá khứ.";
     if (formData.date === today() && formData.start <= currentTimeText()) {
         return "Không được tạo lịch có giờ bắt đầu đã qua. Vui lòng chọn giờ bắt đầu lớn hơn giờ hiện tại.";
@@ -1118,9 +1198,21 @@ function closeNotificationModal() {
 function setupEvents() {
     $("roomSearch").addEventListener("input", renderRooms);
     $("roomStatusFilter").addEventListener("change", renderRooms);
+    $("addRoomBtn").addEventListener("click", () => openRoomModal("add"));
+    $("editRoomBtn").addEventListener("click", () => openRoomModal("edit"));
+    $("deleteRoomBtn").addEventListener("click", openDeleteRoomModal);
     $("roomForm").addEventListener("submit", saveRoom);
-    $("cancelRoomBtn").addEventListener("click", resetRoomForm);
-    $("deleteRoomBtn").addEventListener("click", deleteRoom);
+    $("closeRoomModalBtn").addEventListener("click", closeRoomModal);
+    $("cancelRoomBtn").addEventListener("click", closeRoomModal);
+    $("confirmDeleteRoomBtn").addEventListener("click", deleteRoom);
+    $("closeDeleteRoomModalBtn").addEventListener("click", closeDeleteRoomModal);
+    $("cancelDeleteRoomBtn").addEventListener("click", closeDeleteRoomModal);
+    $("roomModal").addEventListener("click", (event) => {
+        if (event.target.id === "roomModal") closeRoomModal();
+    });
+    $("deleteRoomModal").addEventListener("click", (event) => {
+        if (event.target.id === "deleteRoomModal") closeDeleteRoomModal();
+    });
 
     $("openBookingBtn").addEventListener("click", () => openBookingModal());
     $("closeBookingBtn").addEventListener("click", closeBookingModal);
@@ -1158,13 +1250,12 @@ function setupEvents() {
     $("historySearchBtn").addEventListener("click", renderHistory);
     $("historySearch").addEventListener("input", renderHistory);
     $("historyRoomSearch").addEventListener("input", renderHistory);
-    $("historyDateRange").addEventListener("change", renderHistory);
-    $("historyDateRange").addEventListener("keyup", (event) => {
-        if (event.key === "Enter") renderHistory();
-    });
+    $("historyDateFrom").addEventListener("change", renderHistory);
+    $("historyDateTo").addEventListener("change", renderHistory);
     $("historyResetBtn").addEventListener("click", () => {
         $("historyRoomSearch").value = "";
-        $("historyDateRange").value = "01/05/2024 → 31/05/2024";
+        $("historyDateFrom").value = firstDayOfCurrentMonth();
+        $("historyDateTo").value = today();
         $("historySearch").value = "";
         renderHistory();
     });
@@ -1172,8 +1263,8 @@ function setupEvents() {
     $("freeSearchBtn").addEventListener("click", renderFreeTime);
     $("freeRoomSelect").addEventListener("change", renderFreeTime);
     $("freeDateInput").addEventListener("change", renderFreeTime);
-    $("freeSearch").addEventListener("input", renderFreeTime);
     $("freeShiftSelect").addEventListener("change", renderFreeTime);
+    $("freeSearch").addEventListener("input", renderFreeTime);
 
     if ($("headerNotificationBtn")) {
         $("headerNotificationBtn").addEventListener("click", openNotificationModal);
@@ -1210,6 +1301,8 @@ function init() {
     setupNavigation();
     refreshSelects();
     if ($("bookingDateFilter")) $("bookingDateFilter").value = today();
+    if ($("historyDateFrom")) $("historyDateFrom").value = firstDayOfCurrentMonth();
+    if ($("historyDateTo")) $("historyDateTo").value = today();
     if ($("freeDateInput")) $("freeDateInput").value = today();
     setupEvents();
     setupStorageEventListener();
