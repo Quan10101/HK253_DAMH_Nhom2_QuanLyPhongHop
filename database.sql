@@ -1,10 +1,3 @@
--- ============================================================
--- CSDL mẫu cho đồ án HK253 - Nhóm 2
--- Dự án: Hệ thống đặt lịch họp cho Công ty XYZ
--- Phạm vi code: US-10 đến US-20, bỏ chức năng đăng nhập
--- Hệ quản trị CSDL gợi ý: MySQL / MariaDB
--- ============================================================
-
 CREATE DATABASE IF NOT EXISTS meeting_room_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
