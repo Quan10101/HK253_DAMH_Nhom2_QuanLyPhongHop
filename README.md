@@ -69,3 +69,30 @@ File `database.sql` gồm 3 bảng chính:
 - Đã bỏ mục **Thông báo** khỏi thanh menu bên trái.
 - Khi bấm biểu tượng chuông ở góc trên bên phải, hệ thống mở bảng thông báo dạng popup ở giữa màn hình.
 - Popup hỗ trợ đánh dấu tất cả đã đọc, xóa thông báo và đóng bằng nút ×, nút Đóng, bấm ra ngoài hoặc phím Esc.
+
+
+## Cập nhật giao diện quản lý phòng họp
+- Màn hình Danh sách phòng họp chỉ hiển thị bảng dữ liệu và các nút Thêm phòng, Sửa phòng, Xóa phòng.
+- Người dùng chọn một dòng trong bảng rồi nhấn Sửa hoặc Xóa.
+- Thêm và sửa phòng được thực hiện trong popup riêng.
+- Xóa phòng dùng popup xác nhận riêng và vẫn kiểm tra lịch đặt trong tương lai.
+- Đã bỏ các dòng chữ gợi ý mờ bên dưới trường nhập của form phòng họp.
+
+
+## Cập nhật tìm kiếm và ngày lịch sử
+- Ô tìm kiếm tại Danh sách phòng chỉ tìm theo Mã phòng.
+- Bộ lọc Lịch sử sử dụng dùng ô chọn một ngày. Khi mở trang và khi nhấn Đặt lại, ngày mặc định là ngày hiện tại; người dùng có thể chọn ngày khác.
+
+
+## Cập nhật lịch đặt, thời gian trống và lịch sử
+- Khi lịch được duyệt, màn hình **Thời gian trống** hiển thị các khung giờ bị chiếm đúng theo ngày và phòng đã chọn.
+- Timeline được mở rộng từ **07:00 đến 22:00** để các cuộc họp ngoài giờ hành chính vẫn xuất hiện.
+- Lịch sử sử dụng hỗ trợ lọc theo **Từ ngày – Đến ngày**, mặc định từ ngày đầu tháng hiện tại đến ngày hôm nay.
+
+
+## Cập nhật giao diện thời gian trống
+- Khôi phục giao diện thời gian trống như bản cũ.
+- Timeline hiển thị **07:00–08:00 là Ngoài giờ làm việc**, sau đó các khung làm việc từ **08:00–12:00** và **13:00–17:00**.
+- Khôi phục bộ lọc **Cả ngày / Sáng / Chiều**.
+- Chỉ cho phép tạo lịch họp trong khoảng **08:00 đến 17:00**.
+- Các chỉnh sửa trước đó vẫn được giữ: lịch sử chỉ có cuộc họp đã hoàn thành, lọc lịch sử theo Từ ngày–Đến ngày và người tạo cuộc họp không còn tự điền.
